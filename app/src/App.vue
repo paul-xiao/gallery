@@ -1,16 +1,22 @@
 <template>
   <div id="app">
-    <Gallery msg="Welcome to Your Vue.js App"/>
+    <router-view />
   </div>
 </template>
 
 <script>
-import Gallery from './components/Gallery'
 
 export default {
   name: 'App',
-  components: {
-    Gallery
+  created(){
+   this.init()
+  },
+  methods: {
+    init() {
+      this.$http.get('/').then(({data}) => {
+        data.user && localStorage.setItem('user', data.user)
+      }).catch(err => console.log(err.message))
+    }
   }
 }
 </script>
