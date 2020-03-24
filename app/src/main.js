@@ -9,9 +9,9 @@ Vue.config.productionTip = false
 router.beforeEach((to, from, next) => {
   let {auth} = to.meta
   const user = localStorage.getItem('user')
-
   if( auth && !user) {
-    next('/signin')
+    console.log('you are not login yet')
+    return next('/signin')
   }
   
   next()

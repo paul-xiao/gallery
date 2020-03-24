@@ -5,9 +5,17 @@ const config = require('./config')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
+const bodyParser = require('body-parser')
+const passport = require('./config/passport')
 
 const app = express()
+
 app.use(cookieParser())
+app.use(bodyParser.json()); // create application/json parser
+app.use(bodyParser.urlencoded({ extended: false })); // // create application/x-www-form-urlencoded parser
+
+
+
 mongoose.connect(config.DB).then(() => {
   logger.info('MongoDB is on')
 })
@@ -19,7 +27,7 @@ const sessionOpts = {
    // 设置密钥
  secret: 'gallery',
  // Forces the session to be saved back to the session store
- resave: true,
+ resave: false,
  // Forces a session that is "uninitialized" to be saved to the store.
  saveUninitialized: true,
  // 设置会话cookie名, 默认是connect.sid
@@ -30,57 +38,23 @@ const sessionOpts = {
 }
 
 app.use(session(sessionOpts))
+// init passport
+app.use(passport.initialize());
+app.use(passport.session());
 
-function requireLogin (req, res, next) {
-  if (!req.session.user) {
-    res.redirect('/');
-  } else {
-    next();
-  }
-};
-
-app.get('/dashboard', requireLogin, function(req, res) {
-  logger.info('sessionID:', req.sessionID)
-  res.send({
-    sessionID: req.sessionID,
-    Cookies: req.cookies,
-    Signed_Cookies: req.signedCookies
-  })
-});
-app.get('/', function(req, res) {
-  logger.info('sessionID:', req.sessionID)
-  // Cookies that have not been signed
-  console.log('Cookies: ', req.cookies)
- 
-  // Cookies that have been signed
-  console.log('Signed Cookies: ', req.signedCookies)
-  res.send({
-    sessionID: req.sessionID,
-    Cookies: req.cookies,
-    Signed_Cookies: req.signedCookies
-  })
-});
-app.get('/login', function(req, res) {
-  req.session.user = 'paul'
-  req.session.save()
-  logger.info('sessionID:', req.sessionID)
-  res.send({
-    sessionID: req.sessionID,
-    Cookies: req.cookies,
-    Signed_Cookies: req.signedCookies
-  })
-});
-app.get('/logout', function(req, res) {
-  req.session.destroy()
-  res.send({
-    sessionID: req.sessionID,
-    Cookies: req.cookies,
-    Signed_Cookies: req.signedCookies
-  })
-});
+// app.use(function(req, res, next) {
+//   console.log(req.session)
+//   next()
+// })
 
 const userController = require('./controller/user')
-app.post('signup', userController.signUp)
+app.post('/signup',  userController.signUp)
+app.post('/signin',passport.authenticate('local'),  userController.signIn)
+app.get('/session', passport.authenticateMiddleware(), userController.userInfo)
+app.get('/about', passport.authenticateMiddleware(), function(req, res) {
+  
+  res.send('about')
+})
 
 
 

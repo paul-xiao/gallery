@@ -13,7 +13,7 @@ export default {
   },
   methods: {
     init() {
-      this.$http.get('/').then(({data}) => {
+      this.$http.get('/session').then(({data}) => {
         data.user && localStorage.setItem('user', data.user)
       }).catch(err => console.log(err.message))
     }
