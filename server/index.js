@@ -48,7 +48,7 @@ app.get("/", function(req, res) {
   res.send("hello");
 });
 app.post("/signup", userController.signUp);
-app.post("/signin", passport.authenticate("local"), userController.signIn);
+app.post("/signin", userController.signIn);
 app.delete("/logout", userController.logOut);
 
 app.get("/session", passport.authenticateMiddleware(), userController.userInfo);

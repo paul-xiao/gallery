@@ -34,8 +34,8 @@ export default {
       }).catch(err => console.log(err.message))
     },
     handleSubmit() {
-      this.$http.post('/signin', this.formData).then(() => {
-        this.init()
+      this.$http.post('/signin', this.formData).then(({data}) => {
+        data.status && this.init()
       }).catch(err => console.log(err.message))
     }
   }

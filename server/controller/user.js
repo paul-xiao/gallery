@@ -49,12 +49,22 @@ exports.signUp = (req, res) => {
  */
 
 exports.signIn = function(req, res, next){
-
-  console.log(req.isAuthenticated())
-  res.send({
-    status: true,
-    message: 'signin success'
-  })
+  passport.authenticate('local', function(err, user, info) {
+    if (err) { return next(err) }
+    if (!user) {
+      return res.send({
+        status: false,
+        message: info.message
+      });
+    }
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      return res.send({
+        status: true,
+        message: 'login successed'
+      });
+    });
+  })(req, res, next);
 
 }
 /**
