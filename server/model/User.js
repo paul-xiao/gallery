@@ -54,7 +54,6 @@ User.pre('save', function (next) {
 });
  
 User.methods.comparePassword =  function (passw, cb) {
-    console.log(bcrypt.compareSync(passw, this.password))
     return bcrypt.compareSync(passw, this.password);
 };
 

@@ -1,5 +1,6 @@
 const User = require("../model/User");
-const passport = require("passport");
+const logger = require('../utils/logger')
+const passport = require("../config/passport");
 
 
 /**
@@ -47,9 +48,14 @@ exports.signUp = (req, res) => {
  * @param {String} password
  */
 
-exports.signIn = (req, res) => {
-  console.log('success')
-  res.send('success')
+exports.signIn = function(req, res, next){
+
+  console.log(req.isAuthenticated())
+  res.send({
+    status: true,
+    message: 'signin success'
+  })
+
 }
 /**
  * [userInfo]
@@ -59,5 +65,27 @@ exports.signIn = (req, res) => {
 
 
 exports.userInfo = (req, res) => {
-  console.log(req.session.user)
+  const username  = req.user.username
+  User.findOne(
+    {
+      username: username
+    },
+    (err, result) => {
+      if (err) console.log(err);
+      if (result) {
+        const {username, createdAt} = result
+        res.send({
+          username,
+          createdAt
+        });
+      }
+    })
 };
+
+
+exports.logOut = (req, res) => {
+  req.session.destroy();
+  res.send({ result: 'OK', message: 'Session destroyed' });
+  logger.info('Session destroyed')
+
+}

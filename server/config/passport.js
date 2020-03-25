@@ -6,10 +6,7 @@ var UserModel = require("../model/User"); // 实体数据库模块
 const logger = require("../utils/logger");
 
 // 用户名密码验证策略
-
-passport.use(
-  new LocalStrategy(
-    /**
+/**
 
 * @param username 用户输入的用户名
 
@@ -19,27 +16,28 @@ passport.use(
 
 */
 
+passport.use(
+  new LocalStrategy(
     function(username, password, done) {
       UserModel.findOne({ username: username })
         .then(function(result) {
           if (result != null) {
             // check if password matches
-            if(result.comparePassword(password)){
+            if (result.comparePassword(password)) {
+              logger.success(`user ${username} is on`)
               return done(null, result);
             } else {
-              return done(null, false, { message: "用户不存在" });
+              logger.error("wrong password")
+              return done(null, false, { message:"wrong password"});
             }
-
           } else {
-            logger.error("用户不存在");
-
-            return done(null, false, { message: "用户不存在" });
+            logger.error("user not exsit");
+            return done(null, false, { message:"user not exsit"});
           }
         })
         .catch(function(err) {
           logger.error(err.message);
-
-          return done(null, false, { message: err.message });
+          return done(null, false, { message:err.message});
         });
     }
   )
@@ -64,10 +62,11 @@ passport.authenticateMiddleware = function authenticationMiddleware() {
     if (req.isAuthenticated()) {
       return next();
     } else {
-      res.sendStatus(401);
-      logger.error('Unauthorized', req.isAuthenticated())
+      res.send({
+        message: 'Unauthorized'
+      });
+      logger.error("Unauthorized");
     }
-     
   };
 };
 

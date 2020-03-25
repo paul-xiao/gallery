@@ -7,13 +7,15 @@ Vue.prototype.$http = $http
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
+  let email = localStorage.getItem('user')
   let {auth} = to.meta
-  const user = localStorage.getItem('user')
-  if( auth && !user) {
-    console.log('you are not login yet')
-    return next('/signin')
+  if (to.matched.length === 0) {
+    from.name ? next({
+      name: from.name
+    }) : next('/errorinfo');
+  } else if(!email && auth && !['signin', 'signup'].includes(to.name)) {
+    return next({path: `/signin${to.fullPath ? `?redirect=${to.fullPath}` : ''}`})
   }
-  
   next()
 })
 
