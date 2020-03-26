@@ -1,0 +1,191 @@
+body
+  margin: 0
+  color: $font-color 
+.theme-container
+  background: $theme-color url('/bg.png')
+.theme-content
+  min-height: "calc(100vh - %s)" % ($head-height*2 + $base-padding*2) 
+  padding: $base-padding
+  background: $white
+  max-width: 1000px
+  margin: 0 auto
+  .list-wrap
+    flex:1
+  .archives
+    .total
+      color: lighten($font-color, 20%)
+    .archive
+      &-title
+        color: $font-color
+      &-item
+        display: block
+        padding: 5px 0
+        color: $font-color
+        &:hover
+          color: $link-color-hover
+          transform: translateX(10px)
+          transition: all ease 0.5s
+  &>.tags
+    .tag
+      background: $tag-color
+      margin: 5px
+      padding: 5px 15px
+      display: inline-block
+      color: $base-color
+      cursor: pointer
+      &:hover
+        transform: scale(1.1)
+        transition: all ease-in 0.5s
+    .category
+      background: $category-color
+      margin: 5px
+      padding: 5px 15px
+      display: inline-block
+      color: $base-color
+      cursor: pointer
+      &:hover
+        transform: scale(1.1)
+        transition: all ease-out 0.5s
+  .pagination
+    width: 200px
+    margin: 10px 0
+    .page
+      border: 1px solid $border-color
+      cursor: pointer
+      padding: 0 10px
+      margin: 5px
+      color: $font-color
+      &.active
+        background: $border-color
+  .list
+    display: flex
+    flex-direction: row
+    .archives
+      margin: 10px 0
+      width: 200px
+      padding: $base-padding
+      .title
+        margin: 0
+      .total
+        color: lighten($font-color, 20%)
+      .archive
+        &-title
+          color: $font-color
+        &-item
+          display: block
+          padding: 5px 0
+          color: $font-color
+          &:hover
+            color: $link-color-hover
+            transform: translateX(10px)
+            transition: all ease 0.5s
+    &-inner
+      flex:1
+    &-item
+      border: 1px solid $border-color
+      padding: $base-padding
+      margin: 10px 0
+      &-head
+        line-height: 30px
+        .title
+          text-decoration: none
+          color: $link-color
+        small
+          font-size: 12px
+          color: $font-color
+          .publish-date
+            float right
+          .tag
+           cursor: pointer
+           color: $tag-color
+           &:active, &:focus, &:hover
+             color: $tag-color
+          .category
+           cursor: pointer
+           color: $category-color
+           &:active, &:focus, &:hover
+             color: $category-color
+      &-excerpt
+        &>p
+          margin: 0  
+          padding: 10px 0
+          img
+            width: 200px
+            vertical-align: middle
+            display: block
+.theme-header 
+  background transparent
+  display flex
+  height: $head-height
+  line-height: $head-height
+  padding: 0 $base-padding
+  border-bottom: 1px solid $border-color
+  max-width: 1000px
+  margin: 0 auto
+  .left
+      flex 1
+      a
+       color: $base-color
+  .avatar
+    background: $white;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    right: 10px;
+    top: 10px;
+    z-index: 10;
+    border-radius: 50%;     
+  .nav
+      flex 1
+      text-align: right
+      display: flex
+      justify-content: flex-end
+      position: relative
+      .search-box
+        input
+          height: 30px
+          width: 200px
+          outline: none
+          padding: 0 5px
+          font-size: 15px
+          color: $font-color
+          background: $base-color
+          border: 1px solid $border-color
+      .search-result
+        min-width: 180px
+        height: auto
+        padding: $base-padding
+        border: 1px solid $border-color
+        background: $base-color
+        position: absolute
+        top: 50px
+        text-align: left
+        line-height: 35px
+        &-item
+          line-height: 35px
+          & a:hover
+            color: lighten($link-color, 50%)
+      ul
+        margin 0
+        li
+          list-style none
+          display inline
+          padding: 0 15px
+          a
+           text-decoration: none
+           color: $base-color
+           &:active, &:hover
+              color: $border-color
+.theme-footer
+  max-width: 1000px
+  margin: 0 auto
+  height: $head-height
+  line-height: $head-height
+  background: transparent
+  text-align: center
+  padding: 0 $base-padding
+  border-top: 1px solid $border-color
+  p
+   margin: 0
+   color: $border-color
+   font-size: 12px           

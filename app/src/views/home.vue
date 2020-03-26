@@ -1,8 +1,9 @@
 <template>
+<BaseLayout>
   <div class="container">
     <h1>Home</h1>
     <h4>Hi, {{user}}</h4>
-    <button @click="logout">logout</button>
+    <Button @click="logout">logout</Button>
     <div class="post-wrap" v-if="!!files.length">
       <div class="post" v-for="(file, index) of files" :key="index">
         <h4>{{file.title}}</h4>
@@ -12,8 +13,9 @@
     </div>
 
     <input type="file" class="hidden" ref="fileInput" multiple @change="uploadInit" />
-    <button @click="handleUpload">upload</button>
+    <Button @click="handleUpload">upload</Button>
   </div>
+</BaseLayout>
 </template>
 <script>
 import ipfsClient from "ipfs-http-client";
@@ -33,7 +35,7 @@ export default {
   },
   methods: {
     logout() {
-      this.$http.delete("/logout");
+      this.$http.delete("/user/logout");
       localStorage.removeItem("user");
       this.$router.push("/signin");
     },
@@ -68,3 +70,9 @@ export default {
   }
 };
 </script>
+<style lang="stylus" scoped>
+.post-wrap 
+  .post
+    img
+      height: 50px;
+</style>

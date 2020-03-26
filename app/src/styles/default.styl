@@ -1,0 +1,113 @@
+.theme-content
+  display: flex
+  flex-direction: row
+  .content__default__wrap
+    flex:1
+    padding: $base-padding
+    border: 1px solid $border-color
+    overflow: hidden
+    display: flex
+    flex-direction: column
+  .side-archives
+    width: 200px
+    padding: $base-padding
+    .group-by-month
+      span
+        display: block
+        margin: 2px
+        cursor: pointer
+        &:hover
+          color: $tag-color
+    .group-by-tags
+      .tag
+        background: $tag-color
+        margin: 2px
+        padding: 2px 5px
+        display: inline-block
+        color: $base-color
+        cursor: pointer
+        &:hover
+          background: darken($tag-color, 20%)
+    .group-by-categories   
+      .category
+        background: $category-color
+        margin: 2px
+        padding: 2px 5px
+        display: inline-block
+        color: $base-color
+        cursor: pointer
+        &:hover
+          background: lighten($category-color, 20%)
+.content__default, .list-item-excerpt
+  flex:1
+  img
+    width 300px
+    display block
+    margin: 10px 0
+  blockquote
+    background: $border-color
+    padding: $base-padding
+  .extra-class
+    pre
+      background: $bg-code
+      padding: $base-padding
+      color: lighten($font-color, 40%)
+      overflow: auto
+      font-size: 13px
+      &::-webkit-scrollbar
+        height: 5px
+      &::-webkit-scrollbar-track
+        box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3)
+      &::-webkit-scrollbar-thumb
+        background-color: darkgrey
+        outline: 1px solid slategrey
+      .selector
+        color: orange
+      .property
+        color: pink 
+      .token
+        white-space: normal
+      .comment
+        color: $comment-color
+      .punctuation
+        color: lighten($font-color, 20%)
+      .string
+        color: darkcyan
+      .operator 
+        color:lighten($font-color, 10%)
+      .function
+        color: lighten(darkcyan, 40%)
+      .parameter
+        color: lighten(lightblue, 40%)
+      .keyword
+        color: darken(lightblue, 20%)   
+      .class-name
+        color: darken(pink, 20%) 
+.content_default-title
+  height: 50px
+  line-height: 50px
+  .title
+    text-decoration: none
+    color: $font-color
+    font-size: 16px
+  small
+    font-size: 12px
+    color: $font-color
+    .publish-date{
+      float right
+    }
+    .category
+      cursor: pointer
+      color: $category-color
+      &:active, &:focus, &:hover
+        color: $category-color
+    .tag
+      cursor: pointer
+      color: $tag-color
+      &:active, &:focus, &:hover
+        color: $tag-color
+.content_default-foot
+    text-align: right 
+  .last-update
+    color: lighten($font-color,20%)
+    font-size: 12px

@@ -25,7 +25,7 @@ export default {
   },
   methods: {
      init() {
-      this.$http.get('/session').then(({data}) => {
+      this.$http.get('/user/session').then(({data}) => {
         this.user = data.username
         if(data.username) {
           localStorage.setItem('user', data.username)
@@ -34,46 +34,39 @@ export default {
       }).catch(err => console.log(err.message))
     },
     handleSubmit() {
-      this.$http.post('/signin', this.formData).then(({data}) => {
+      this.$http.post('/user/signin', this.formData).then(({data}) => {
         data.status && this.init()
       }).catch(err => console.log(err.message))
     }
   }
 }
 </script>
-<style lang="less" scoped>
-.signin{
+<style lang="stylus" scoped>
+.signin
  height: 100%;
  width: 100%;
  display: flex;
-justify-content: center;
-align-items: center;
-.form{
-  input,button{
+ justify-content: center;
+ align-items: center;
+.form
+  input,button
     display: block;
     border: 0;
     margin: 10px 0;
     height: 35px;
     width: 200px;
     outline: none
-  }
-  input {
+  input
     width: calc( 200px - 20px);
     padding: 0 10px;
     box-shadow: 0 0 1px #607d8b;
-  }
-  button {
+  button
     background: lightblue;
     color: #FFF;
-    &:active, &:hover {
-    background: darken(lightblue, 20%);
-    }
-  }
-  a {
+    &:active, &:hover 
+     background: darken(lightblue, 20%);
+  a
     margin: 10px 0;
     text-decoration: none;
     color: darken(lightblue, 10%);
-  }
-}
-}
 </style>

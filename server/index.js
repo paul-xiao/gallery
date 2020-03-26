@@ -44,18 +44,16 @@ app.use(passport.session());
 // })
 
 const userController = require("./controller/user");
+const postController = require("./controller/post");
 app.get("/", function(req, res) {
   res.send("hello");
 });
-app.post("/signup", userController.signUp);
-app.post("/signin", userController.signIn);
-app.delete("/logout", userController.logOut);
+app.post("/user/signup", userController.signUp);
+app.post("/user/signin", userController.signIn);
+app.delete("/user/logout", userController.logOut);
+app.get("/user/session", passport.authenticateMiddleware(), userController.userInfo);
 
-app.get("/session", passport.authenticateMiddleware(), userController.userInfo);
-app.get("/about", passport.authenticateMiddleware(), function(req, res) {
-  res.send("about");
-});
-
+app.post("addpost",passport.authenticateMiddleware(), postController.addPost)
 app.listen(config.SERVER.PORT, async err => {
   if (err) {
     logger.error(err);

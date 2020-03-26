@@ -21,46 +21,41 @@ export default {
   },
   methods: {
     handleSubmit() {
-      this.$http.post('/signup', this.formData).then(() => {
+      this.$http.post('/user/signup', this.formData).then(() => {
         alert('you are on')
       })
     }
   }
 }
 </script>
-<style lang="less" scoped>
-.signin{
+<style lang="stylus" scoped>
+.signin
  height: 100%;
  width: 100%;
  display: flex;
-justify-content: center;
-align-items: center;
-.form{
-  input,button{
+ justify-content: center;
+ align-items: center;
+.form
+  input,button
     display: block;
     border: 0;
     margin: 10px 0;
     height: 35px;
     width: 200px;
     outline: none
-  }
-  input {
+  
+  input 
     width: calc( 200px - 20px);
     padding: 0 10px;
     box-shadow: 0 0 1px #607d8b;
-  }
-  button {
+  
+  button 
     background: lightblue;
     color: #FFF;
-    &:active, &:hover {
-    background: darken(lightblue, 20%);
-    }
-  }
-  a {
+    &:active, &:hover
+      background: darken(lightblue, 20%)
+  a
     margin: 10px 0;
     text-decoration: none;
     color: darken(lightblue, 10%);
-  }
-}
-}
 </style>
