@@ -19,7 +19,7 @@ import Footer from '../components/Footer'
    computed: {
      site() {
        return {
-         title: '1'
+         title: 'Home'
        }
      },
      config() {

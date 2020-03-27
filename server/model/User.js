@@ -23,7 +23,7 @@ var User = new Schema({
     region: {
         type: String
     },
-    slogan: {
+    intro: {
         type: String
     }
 },{

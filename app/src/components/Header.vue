@@ -21,7 +21,9 @@
           </li>
         </ul>
     </div>
-    <div class="avatar"></div>
+    <div class="avatar">
+      <img v-if="avatar" :src="avatar" alt="">
+      <icon-user v-else class="default-icon" /></div>
   </div>
 </template>
 <script>
@@ -31,7 +33,8 @@ export default {
     return {
       result: [],
       searchVal: '',
-      sideOn: false
+      sideOn: false,
+      avatar: ''
     }
   },
   props: {

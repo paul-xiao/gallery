@@ -43,7 +43,7 @@ exports.signUp = (req, res) => {
 };
 
 /**
- * [userInfo]
+ * [signIn]
  * @param {String} username
  * @param {String} password
  */
@@ -83,19 +83,55 @@ exports.userInfo = (req, res) => {
     (err, result) => {
       if (err) console.log(err);
       if (result) {
-        const {username, createdAt} = result
+        const {username, avatar, intro, nickname, createdAt} = result
         res.send({
+          status: true,
           username,
+          avatar,
+          intro,
+          nickname,
           createdAt
         });
       }
     })
 };
 
-
+/**
+ * [signIn]
+ * @param none
+ */
 exports.logOut = (req, res) => {
   req.session.destroy();
   res.send({ result: 'OK', message: 'Session destroyed' });
   logger.info('Session destroyed')
 
 }
+
+/**
+ * [update]
+ * @param {String} username
+ * @param {String} password
+ */
+
+exports.updateUserInfo = (req, res) => {
+  const data = req.body
+  console.log(JSON.stringify(data))
+  const username = req.user.username
+  if(username){
+    User.update({
+      username
+    },data, function(err){
+      if(err) {
+        res.status(500).send({
+          status:false,
+          message: err
+        })
+      }else {
+        res.send({
+          status: true,
+          message: 'Update success'
+        })
+      }
+    })
+  }
+};

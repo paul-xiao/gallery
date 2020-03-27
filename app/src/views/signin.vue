@@ -28,7 +28,7 @@ export default {
       this.$http.get('/user/session').then(({data}) => {
         this.user = data.username
         if(data.username) {
-          localStorage.setItem('user', data.username)
+          localStorage.setItem('user', JSON.stringify(data))
           this.$router.push('/')
         }
       }).catch(err => console.log(err.message))

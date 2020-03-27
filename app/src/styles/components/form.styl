@@ -1,0 +1,33 @@
+.form-input
+  line-height: 35px
+  &+&,&+.form-textarea
+    margin-top: 5px 
+.form
+  padding: $base-padding
+  &-head
+    font-weight: bold
+  &-main
+    padding: $base-padding
+    .avatar
+      height: 100px
+      width: 100px
+      display: inline
+      .icon, img
+        height: 100px
+        width: 100px
+        border-radius: 50%
+    .form-input, .form-textarea
+      display: flex
+      label
+        color: $font-color
+        width: 60px
+        text-align: right
+        padding-right: $base-padding
+      input,textarea
+        border: 1px solid $border-color
+        flex:1
+        outline: none
+        padding-left: $base-padding*0.6
+        color: $font-color
+      textarea
+        max-height: 80px   

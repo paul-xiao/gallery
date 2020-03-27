@@ -63,6 +63,7 @@ passport.authenticateMiddleware = function authenticationMiddleware() {
       return next();
     } else {
       res.send({
+        status: false,
         message: 'Unauthorized'
       });
       logger.error("Unauthorized");

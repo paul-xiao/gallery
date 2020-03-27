@@ -50,6 +50,7 @@ app.get("/", function(req, res) {
 });
 app.post("/user/signup", userController.signUp);
 app.post("/user/signin", userController.signIn);
+app.post("/user/update", userController.updateUserInfo);
 app.delete("/user/logout", userController.logOut);
 app.get("/user/session", passport.authenticateMiddleware(), userController.userInfo);
 
@@ -61,3 +62,7 @@ app.listen(config.SERVER.PORT, async err => {
     logger.info(`Server runing on: `, `http://127.0.0.1:${config.SERVER.PORT}`);
   }
 });
+
+app.get('/ip', function(req, res) {
+  res.send(req.ip)
+})

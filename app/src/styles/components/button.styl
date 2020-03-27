@@ -1,0 +1,19 @@
+btn(type = 'default')
+  background: $base-color
+  border: 0
+  height: 35px
+  border-radius: 4px
+  padding: 5px 12px
+  font-size: 16px
+  outline: none
+.btn
+  btn()
+  &+&
+    margin-left: 5px
+  &-primary
+    btn $primary
+  &-secondary
+    btn $secondary
+
+
+    // btn(type) primary / secondary ...
