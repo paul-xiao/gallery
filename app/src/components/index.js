@@ -1,13 +1,15 @@
 import BaseLayout from './BaseLayout'
 import Button from './Button'
+import message from './message'
 import icons from './icons'
 import forms from './form'
 
 const components = [
   BaseLayout,
   Button,
+  message,
   icons,
- forms
+  forms
 ]
 
 

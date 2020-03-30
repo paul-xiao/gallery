@@ -1,5 +1,5 @@
 <template>
-    <button :type="type" class="btn" @click="handleClick">{{title}}</button>
+    <button :type="type" :class="[`btn`, `btn-${variant}`]" @click="handleClick">{{title}}</button>
 </template>
 <script>
 export default {
@@ -8,6 +8,10 @@ export default {
     type: {
       type: String,
       default: 'button'
+    },
+    variant: {
+      type: String,
+      default: 'default'
     },
     title: {
       type: String,

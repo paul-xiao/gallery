@@ -17,6 +17,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -30,13 +31,17 @@ export default {
     }
   },
   computed: {
-    userinfo() {
-      return JSON.parse(localStorage.getItem('user'))
-    }
+    ...mapGetters([
+      'userinfo'
+    ])
   },
   watch: {
-   formData(val) {
-     console.log(val)
+   formData: {
+     handler(val) {
+      console.log(val);
+    },
+    immediate: true,
+    deep: true
    }
   },
   mounted() {
@@ -44,13 +49,10 @@ export default {
   },
   methods: {
     init() {
-      this.formData = Object.assign(this.formData, this.userinfo)
-      console.log(this.formData)
+      this.formData = this.userinfo
     },
     handleSubmit() {
-       this.$http.post('/user/update', this.formData).then(() => {
-          this.$router.go()
-        })
+       this.$store.dispatch('UPDATE_USER_INFO', this.formData)
     },
     handleReset() {
 
@@ -62,9 +64,9 @@ export default {
       let files = [...e.target.files];
       this.$saveToIpfs(files).then(file => {
         Object.assign(this.formData, {
-          avatar: `/api/ipfs/${file.path}`,
-          size: file.size
+          avatar: `/api/ipfs/${file.path}`
         })
+        this.$store.commit('UPDATE_USER_STATE', this.formData)
       }).catch(err => console.log(err))
     },
   }

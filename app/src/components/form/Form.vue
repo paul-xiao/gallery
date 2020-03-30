@@ -7,7 +7,7 @@
       <slot name="main" />
     </div>
     <div class="form-foot">
-      <Button title="Save" @click="handleSubmit"/>
+      <Button variant="primary" title="Save" @click="handleSubmit"/>
       <Button title="Reset" @click="handleReset"/>
     </div>
   </div>

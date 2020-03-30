@@ -22,11 +22,12 @@
         </ul>
     </div>
     <div class="avatar">
-      <img v-if="avatar" :src="avatar" alt="">
+      <img v-if="userinfo" :src="userinfo.avatar" alt="">
       <icon-user v-else class="default-icon" /></div>
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Header',
   data() {
@@ -34,7 +35,6 @@ export default {
       result: [],
       searchVal: '',
       sideOn: false,
-      avatar: ''
     }
   },
   props: {
@@ -70,15 +70,9 @@ export default {
     document.addEventListener('keyup', this.clearSearchVal)
   },
   computed:{
-    pages() {
-       const blogs = this.$site.pages.filter(e => e.id === 'post').sort((a,b) => new Date(b.publishDate) - new Date(a.publishDate))
-
-        if(this.filter){
-           return blogs.filter(e => (e.frontmatter.tags && e.frontmatter.tags.includes(this.filter)) || (e.frontmatter.categories && e.frontmatter.categories.includes(this.filter)))
-         } else {
-          return blogs
-         }
-     }
+    ...mapGetters([
+      'userinfo'
+    ])
   },
   methods: {
     handleKeyUp(e) {

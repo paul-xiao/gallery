@@ -10,6 +10,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -19,19 +20,21 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      'userinfo'
+    ]) 
+  },
   created() {
-    const user = localStorage.getItem('user')
-    user && this.$router.push('/')
+    const { username } = this.userinfo
+    username && this.$router.push('/')
   },
   methods: {
      init() {
-      this.$http.get('/user/session').then(({data}) => {
-        this.user = data.username
-        if(data.username) {
-          localStorage.setItem('user', JSON.stringify(data))
-          this.$router.push('/')
-        }
-      }).catch(err => console.log(err.message))
+     this.$store.dispatch('GET_USER_INFO').then(() => {
+       console.log(localStorage.getItem('userinfo'))
+      this.$router.push('/')
+     })
     },
     handleSubmit() {
       this.$http.post('/user/signin', this.formData).then(({data}) => {

@@ -1,0 +1,17 @@
+.message
+  background: $base-color
+  box-sizing: border-box
+  border-radius: 5px
+  margin: 0 $base-padding
+  width: "calc(100% - %s)" % ($base-padding*2) 
+  height: 48px
+  position: fixed
+  &__content_wrap
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  &__content
+    color: $font-color
+    &-title
+      padding: 0 $base-padding

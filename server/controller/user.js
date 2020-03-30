@@ -83,12 +83,13 @@ exports.userInfo = (req, res) => {
     (err, result) => {
       if (err) console.log(err);
       if (result) {
-        const {username, avatar, intro, nickname, createdAt} = result
+        const {username, avatar, intro, region, nickname, createdAt} = result
         res.send({
           status: true,
           username,
           avatar,
           intro,
+          region,
           nickname,
           createdAt
         });

@@ -1,7 +1,7 @@
 <template>
   <div class="form-input">
     <label :for="name">{{name}}</label>
-    <input :type="type" :name="name" v-model="value"/>
+    <input :type="type" :name="name" :value="value" @keyup="handleChange"/>
   </div>
 </template>
 <script>
@@ -17,6 +17,11 @@ export default {
     type: {
       type: String,
       default: 'text'
+    }
+  },
+  methods: {
+    handleChange(e) {
+      this.$emit('input', e.target.value)
     }
   }
 }

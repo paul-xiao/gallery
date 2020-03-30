@@ -1,19 +1,20 @@
-btn(type = 'default')
-  background: $base-color
+btn(bg = $default-color, font = $font-color )
+  background: bg
   border: 0
   height: 35px
   border-radius: 4px
   padding: 5px 12px
   font-size: 16px
   outline: none
+  color: font
 .btn
   btn()
   &+&
     margin-left: 5px
   &-primary
-    btn $primary
+    btn $primary $white
   &-secondary
-    btn $secondary
+    btn $secondary $white
 
 
     // btn(type) primary / secondary ...
