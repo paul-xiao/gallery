@@ -16,8 +16,16 @@ const router = new Router({
       path: '/',
       name: 'home',
       component: include('index'),
-      redirect: '/profile',
+      redirect: '/gallery',
       children: [
+        {
+          path: '/gallery',
+          name: 'gallery',
+          component: include('gallery'),
+          meta: {
+            auth: true
+          }
+        },
         {
           path: '/profile',
           name: 'profile',

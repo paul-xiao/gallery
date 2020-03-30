@@ -1,0 +1,23 @@
+.dropdown
+  &-main
+    background: $white;
+    width: 150px;
+    position: absolute;
+    right: 0px;
+    box-sizing: border-box
+    border: 1px solid $border-color
+    border-radius: 5px
+    &:before
+      content: ''
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-bottom: 10px solid $white;
+      position: absolute;
+      top: -10px;
+      right: 10px;
+    .dropdown-item
+      line-height: 35px
+      &.active, &:active, &:hover,  &:focus
+        background: $bg-color

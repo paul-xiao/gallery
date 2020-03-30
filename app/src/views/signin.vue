@@ -38,8 +38,14 @@ export default {
     },
     handleSubmit() {
       this.$http.post('/user/signin', this.formData).then(({data}) => {
-        data.status && this.init()
-      }).catch(err => console.log(err.message))
+        if(data.status ){
+            this.init()
+        } else {
+           this.$message.error(data.message)
+        }
+      }).catch(err => {
+        this.$message.error(err.message)
+      })
     }
   }
 }

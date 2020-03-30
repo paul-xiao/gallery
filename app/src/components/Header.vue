@@ -22,8 +22,12 @@
         </ul>
     </div>
     <div class="avatar">
-      <img v-if="userinfo" :src="userinfo.avatar" alt="">
-      <icon-user v-else class="default-icon" /></div>
+      <Dropdown :list="dropdown">
+        <img v-if="userinfo.avatar" :src="userinfo.avatar" alt="">
+        <icon-user v-else class="default-icon" />
+      </Dropdown>
+    </div>
+      
   </div>
 </template>
 <script>
@@ -35,6 +39,16 @@ export default {
       result: [],
       searchVal: '',
       sideOn: false,
+      dropdown: [
+        {
+          label: 'Profile',
+          link: '/profile',
+        },
+        {
+          label: 'Logout',
+          link: '',
+        }
+      ]
     }
   },
   props: {
@@ -52,7 +66,7 @@ export default {
        return {
          nav: [{
            link: '/',
-           text: 'xx'
+           text: 'gallery'
          }]
        }
      }

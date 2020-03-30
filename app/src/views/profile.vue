@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     init() {
-      this.formData = this.userinfo
+      Object.assign(this.formData, this.userinfo)
     },
     handleSubmit() {
        this.$store.dispatch('UPDATE_USER_INFO', this.formData)

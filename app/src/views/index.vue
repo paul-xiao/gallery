@@ -4,10 +4,21 @@
 </BaseLayout>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: "Home",
   created() {
     this.init()
+  },
+  computed: {
+    ...mapGetters([
+      'userinfo'
+    ])
+  },
+  watch: {
+   userinfo(val) {
+    !val.username && this.$router.push('/signin')
+   }
   },
   methods: {
     init() {
