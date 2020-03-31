@@ -2,7 +2,7 @@ import BaseLayout from './BaseLayout'
 import Button from './Button'
 import Dropdown from './Dropdown'
 import message from './message'
-import icons from './icons'
+import Icon from './Icon'
 import forms from './form'
 
 const components = [
@@ -10,7 +10,7 @@ const components = [
   Button,
   Dropdown,
   message,
-  icons,
+  Icon,
   forms
 ]
 

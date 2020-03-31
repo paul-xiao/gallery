@@ -1,7 +1,7 @@
 <template>
   <div class="form-input">
     <label :for="name">{{name}}</label>
-    <input :type="type" :name="name" :value="value" @keyup="handleChange"/>
+    <input :type="type" :name="name" :value="value" :readonly="readonly" @keyup="handleChange"/>
   </div>
 </template>
 <script>
@@ -17,6 +17,10 @@ export default {
     type: {
       type: String,
       default: 'text'
+    },
+    readonly: {
+      type: String,
+      default: ''
     }
   },
   methods: {

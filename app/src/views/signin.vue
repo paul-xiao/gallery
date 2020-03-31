@@ -32,7 +32,6 @@ export default {
   methods: {
      init() {
      this.$store.dispatch('GET_USER_INFO').then(() => {
-       console.log(localStorage.getItem('userinfo'))
       this.$router.push('/')
      })
     },

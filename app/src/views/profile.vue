@@ -7,7 +7,7 @@
                 <img v-if="formData.avatar" :src="formData.avatar" alt="">
                 <icon-user v-else class="default-icon" />
             </div>
-            <Input type="text" name="username" v-model="formData.username"/>
+            <Input type="text" name="username" readonly="readonly" v-model="formData.username"/>
             <Input type="text" name="nickname" v-model="formData.nickname"/>
             <Input type="text" name="region" v-model="formData.region"/>
             <Textarea name="intro" v-model="formData.intro" />
