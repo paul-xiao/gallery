@@ -7,6 +7,7 @@ const user = {
   mutations: {
     INIT_USER_STATE(state, userinfo={}) {
       state.userinfo = userinfo
+      localStorage.setItem('userinfo', JSON.stringify(state.userinfo))
     },
     UPDATE_USER_STATE(state, userinfo={}) {
       Object.assign(state.userinfo, userinfo)

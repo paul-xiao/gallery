@@ -7,6 +7,7 @@ import $saveToIpfs from './utils/saveToIpfs'
 import clickOutside from './directives/click-outside'
 import components from './components'
 import $message from './components/message'
+import vuetify from './plugins/vuetify';
 
 
 Vue.prototype.$http = $http
@@ -30,5 +31,6 @@ Vue.use(components)
 new Vue({
   router,
   store,
-  render: h => h(App),
+  vuetify,
+  render: h => h(App)
 }).$mount('#app')
