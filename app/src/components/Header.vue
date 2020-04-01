@@ -1,107 +1,95 @@
 <template>
-  <div class="theme-header" v-if="site">
-    <div class="nav-bar" @click="sideOn = true">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-    <div class="left">
-       <router-link to="/">{{site.title}}</router-link>
-    </div>
-    <div :class="['nav', sideOn ? 'side-on' : '']">
-        <div class="title"><h4>Menu</h4><div class="side-close" @click="sideOn = false"></div></div>
-        <div class="search-box" v-click-outside="clearSearchVal">
-          <input type="text" @keyup.prevent="handleKeyUp" v-model="searchVal" placeholder="input title here ...">
-        </div>
-        <ul>
-          <li v-for="(item, index) in config.nav" :key="index">
-            <router-link :to="item.link">
-            {{item.text}}
-            </router-link>
-          </li>
-        </ul>
-    </div>
-    <div class="avatar">
-      <Dropdown :list="dropdown">
-        <img v-if="userinfo.avatar" :src="userinfo.avatar" alt="">
-        <icon-user v-else class="default-icon" />
-      </Dropdown>
-    </div>
-      
-  </div>
+  <v-app-bar app clipped-left color="indigo">
+    <v-icon @click="toggleDrawer">menu</v-icon>
+    <v-toolbar-title class="ml-4">App</v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-icon>add</v-icon>
+  </v-app-bar>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'Header',
+  name: "Header",
   data() {
     return {
       result: [],
-      searchVal: '',
+      searchVal: "",
       sideOn: false,
       dropdown: [
         {
-          label: 'Profile',
-          link: '/profile',
+          label: "Profile",
+          link: "/profile"
         },
         {
-          label: 'Logout',
-          link: '',
+          label: "Logout",
+          link: ""
         }
       ]
-    }
+    };
   },
   props: {
-   site: {
-     type: Object,
-     default: () => {
-       return {
-         title: 'Gallery'
-       }
-     }
-   },
-   config: {
-     type: Object,
-     default: () => {
-       return {
-         nav: [{
-           link: '/',
-           text: 'gallery'
-         }]
-       }
-     }
-   }
+    drawer: {
+      type: Boolean,
+      default: false
+    },
+    site: {
+      type: Object,
+      default: () => {
+        return {
+          title: "Gallery"
+        };
+      }
+    },
+    config: {
+      type: Object,
+      default: () => {
+        return {
+          nav: [
+            {
+              link: "/",
+              text: "gallery"
+            }
+          ]
+        };
+      }
+    }
   },
   watch: {
     $route() {
-      this.sideOn = false
+      this.sideOn = false;
     },
     sideOn() {
       // console.log(1)
     }
   },
   mounted() {
-    document.addEventListener('keyup', this.clearSearchVal)
+    document.addEventListener("keyup", this.clearSearchVal);
   },
-  computed:{
-    ...mapGetters([
-      'userinfo'
-    ])
+  computed: {
+    ...mapGetters(["userinfo"])
   },
   methods: {
-    handleKeyUp(e) {
-     const { value } = e.target
-     this.result = value.length > 2 ? this.pages.filter(e => e.title.toLocaleLowerCase().includes(value.toLocaleLowerCase())) : []
+    toggleDrawer() {
+      this.$emit("input", !this.drawer);
     },
-    clearSearchVal(e){
-      if(!e.key || e.key === 'Escape'){
-        this.searchVal = ""
-        this.result = []
+    handleKeyUp(e) {
+      const { value } = e.target;
+      this.result =
+        value.length > 2
+          ? this.pages.filter(e =>
+              e.title.toLocaleLowerCase().includes(value.toLocaleLowerCase())
+            )
+          : [];
+    },
+    clearSearchVal(e) {
+      if (!e.key || e.key === "Escape") {
+        this.searchVal = "";
+        this.result = [];
       }
     }
   },
   beforeDestory() {
-    document.removeEventListener('keyup', this.clearSearchVal)
+    document.removeEventListener("keyup", this.clearSearchVal);
   }
-}
+};
 </script>

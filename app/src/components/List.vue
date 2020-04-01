@@ -1,30 +1,48 @@
 <template>
-  <div class="list-wrap">
-    <Breadcrumbs :pageNum="pageNum" v-model="currentPage"/>
-    <div class="list" v-if="list">
-     <div class="list-inner">
-       <div class="list-item" v-for="page in list">
-      <div class="list-item-head">
-       <router-link :to="page.path" class="title">{{page.title}}</router-link>
-         <small><span class="publish-date">{{publishDate(page.frontmatter.date)}}</span></small>
-       </div>
-      <div v-html="page.excerpt" class="list-item-excerpt"></div>
-      <div class="list-item-head"> <small><span class="tags" v-for="tag in page.frontmatter.tags">
-         <span class="tag" @click="handleClick(tag)">
-           {{` #${tag}`}}
-         </span>
-       </span>
-       <span class="categories" v-for="category in page.frontmatter.categories">
-         <span class="category" @click="handleClick(category)">{{` @${category}`}}</span>
-       </span>
-       <span class="sticked" v-if="page.frontmatter.stick">sticked</span>
-       </small></div>
-    </div>
-     </div>
-  </div>
-  <Pagination :pageNum="pageNum" v-model="currentPage"/>
-  </div>
-</template>
+<v-card
+    max-width="344"
+    class="mx-auto"
+  >
+    <v-list-item>
+      <v-list-item-avatar color="grey"></v-list-item-avatar>
+      <v-list-item-content>
+        <v-list-item-title class="headline">Our Changing Planet</v-list-item-title>
+        <v-list-item-subtitle>by Kurt Wagner</v-list-item-subtitle>
+      </v-list-item-content>
+    </v-list-item>
+
+    <v-img
+      src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg"
+      height="194"
+    ></v-img>
+
+    <v-card-text>
+      Visit ten places on our planet that are undergoing the biggest changes today.
+    </v-card-text>
+
+    <v-card-actions>
+      <v-btn
+        text
+        color="deep-purple accent-4"
+      >
+        Read
+      </v-btn>
+      <v-btn
+        text
+        color="deep-purple accent-4"
+      >
+        Bookmark
+      </v-btn>
+      <v-spacer></v-spacer>
+      <v-btn icon>
+        <v-icon>mdi-heart</v-icon>
+      </v-btn>
+      <v-btn icon>
+        <v-icon>mdi-share-variant</v-icon>
+      </v-btn>
+    </v-card-actions>
+  </v-card>   
+ </template>
 <script>
 import moment from '../utils/moment'
 import Pagination from "./Pagination";

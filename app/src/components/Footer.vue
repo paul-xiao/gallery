@@ -1,18 +1,14 @@
 <template>
-  <div class="theme-footer">
-    <p>created by <span>@paulxiaooo</span></p>
-  </div>
+  <v-footer color="indigo" app>
+    <span class="white--text">&copy; 2019</span>
+  </v-footer>
 </template>
 <script>
 export default {
-  name: 'Footer',
+  name: "Footer",
   data() {
-    return {
-
-    }
+    return {};
   },
-  props: {
-
-  }
-}
+  props: {}
+};
 </script>
