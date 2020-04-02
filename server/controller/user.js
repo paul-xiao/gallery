@@ -136,3 +136,31 @@ exports.updateUserInfo = (req, res) => {
     })
   }
 };
+
+
+exports.deleteUser = (req, res) => {
+  const userId = req.params.id
+  const username = req.user && req.user.username
+  if(username){
+    User.deleteOne({
+      _id: userId
+    },data, function(err){
+      if(err) {
+        res.status(500).send({
+          status:false,
+          message: err
+        })
+      }else {
+        res.send({
+          status: true,
+          message: 'Delete success'
+        })
+      }
+    })
+  } else {
+    res.status(401).send({
+      status:false,
+      message: 'Unauthorized'
+    })
+  }
+}

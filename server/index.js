@@ -52,9 +52,19 @@ app.post("/user/signup", userController.signUp);
 app.post("/user/signin", userController.signIn);
 app.post("/user/update", userController.updateUserInfo);
 app.delete("/user/logout", userController.logOut);
+app.delete("/user/delete/:id", userController.deleteUser);
 app.get("/user/session", passport.authenticateMiddleware(), userController.userInfo);
 
-app.post("addpost",passport.authenticateMiddleware(), postController.addPost)
+app.post("/post/add", postController.addPost)
+app.post("/post/edit/:id", postController.editPostByID)
+app.delete("/post/delete/:id", postController.deletePostByID)
+app.post("/test/:id", function(req, res) {
+  console.log(req.body.name)
+  console.log(req.params)
+  console.log(req.query)
+  res.send('ok')
+})
+
 app.listen(config.SERVER.PORT, async err => {
   if (err) {
     logger.error(err);
@@ -62,7 +72,3 @@ app.listen(config.SERVER.PORT, async err => {
     logger.info(`Server runing on: `, `http://127.0.0.1:${config.SERVER.PORT}`);
   }
 });
-
-app.get('/ip', function(req, res) {
-  res.send(req.ip)
-})
