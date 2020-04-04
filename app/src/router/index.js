@@ -27,6 +27,14 @@ const router = new Router({
           }
         },
         {
+          path: '/post',
+          name: 'post',
+          component: include('post'),
+          meta: {
+            auth: true
+          }
+        },
+        {
           path: '/profile',
           name: 'profile',
           component: include('profile'),

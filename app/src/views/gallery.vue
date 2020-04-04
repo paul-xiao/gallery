@@ -1,5 +1,4 @@
 <template>
-
       <v-row >
         <v-col
           v-for="card in cards"
@@ -33,10 +32,13 @@
             </v-card-actions>
           </v-card>
         </v-col>
+                  <input type="file" class="hidden" ref="fileInput" @change="uploadInit" />
       </v-row>
+
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Gallery',
    data: () => ({
@@ -49,12 +51,21 @@ export default {
   props: {
     msg: String
   },
-  mounted() {
-    const AMOUNT =  100
-    for(let i =0 ; i< AMOUNT; i++) {
-      this.lists.push({
-        name: i.toString()
-      })
+  computed: {
+    ...mapGetters([
+      'uploadStatus'
+    ])
+  },
+  watch: {
+    uploadStatus(val){
+      console.log('xxx')
+      val && this.$refs.fileInput.click()
+      this.$store.commit('UPDATE_UPLOAD_STATUS', false)
+    }
+  },
+  methods: {
+    uploadInit(){
+
     }
   }
 }

@@ -1,9 +1,11 @@
 <template>
   <v-app-bar app clipped-left color="indigo">
-    <v-icon @click="toggleDrawer">menu</v-icon>
-    <v-toolbar-title class="ml-4">App</v-toolbar-title>
+    <v-icon @click="toggleDrawer" color="white">menu</v-icon>
+    <v-toolbar-title class="ml-4 white--text capitalize">{{$route.name}}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-icon>add</v-icon>
+    <v-btn @click="handlePost" color="primary" v-if="$route.name === 'post'">save</v-btn>
+    <v-icon @click="handlePost" color="white" v-else>add</v-icon>
+
   </v-app-bar>
 </template>
 <script>
@@ -86,6 +88,10 @@ export default {
         this.searchVal = "";
         this.result = [];
       }
+    },
+    handlePost(){
+      console.log(1)
+      this.$store.commit('UPDATE_UPLOAD_STATUS', true)
     }
   },
   beforeDestory() {
