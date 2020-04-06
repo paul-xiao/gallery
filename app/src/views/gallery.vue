@@ -32,7 +32,7 @@
             </v-card-actions>
           </v-card>
         </v-col>
-                  <input type="file" class="hidden" ref="fileInput" @change="uploadInit" />
+        <input type="file" class="hidden" ref="fileInput" multiple @change="uploadInit" />
       </v-row>
 
 </template>
@@ -53,19 +53,21 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'uploadStatus'
+      'uploadStatus',
+      'uploadFiles'
     ])
   },
   watch: {
     uploadStatus(val){
-      console.log('xxx')
       val && this.$refs.fileInput.click()
       this.$store.commit('UPDATE_UPLOAD_STATUS', false)
     }
   },
   methods: {
-    uploadInit(){
-
+    uploadInit(e){
+      const {files} = e.target
+      this.$store.commit('UPDATE_UPLOAD_FILES', files)
+      this.$router.push('/post')
     }
   }
 }

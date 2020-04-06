@@ -8,10 +8,25 @@ var Post = new Schema({
         type: String,
         required: true
     },
-    link: {
-        type: String,
-        required: true
-    },
+    attaches:[
+        new Schema({
+            name: {
+                type: String,
+            },
+            link: {
+                type: String,
+            },
+            type: {
+                type: String,
+            },
+            size: {
+                type: String,
+            },
+        },{
+            timestamps: true,
+            collection: 'file'
+        })
+    ],
     desc: {
         type: String
     }

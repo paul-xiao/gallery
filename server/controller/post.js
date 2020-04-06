@@ -1,6 +1,7 @@
 const Post = require("../model/Post");
 const ObjectId = require('mongoose').Types.ObjectId
 const logger = require('../utils/logger')
+const saveToIpfs = require('../utils/saveToIpfs')
 
 exports.addPost = (req, res) => {
   const post = new Post({
