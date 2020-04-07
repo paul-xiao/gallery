@@ -8,12 +8,12 @@ var Post = new Schema({
         type: String,
         required: true
     },
-    attaches:[
+    files:[
         new Schema({
             name: {
                 type: String,
             },
-            link: {
+            path: {
                 type: String,
             },
             type: {

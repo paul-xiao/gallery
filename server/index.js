@@ -7,12 +7,14 @@ const mongoose = require("mongoose");
 const MongoStore = require("connect-mongo")(session);
 const bodyParser = require("body-parser");
 const passport = require("./config/passport");
+const multer = require('multer')
 
+const upload = multer()
 const app = express();
 
 app.use(cookieParser());
-app.use(bodyParser.json()); // create application/json parser
-app.use(bodyParser.urlencoded({ extended: false })); // // create application/x-www-form-urlencoded parser
+app.use(bodyParser.json({limit: '50mb',extended: true })); // create application/json parser
+app.use(bodyParser.urlencoded({limit: '50mb', extended: false })); // // create application/x-www-form-urlencoded parser
 
 mongoose.connect(config.DB).then(() => {
   logger.info("MongoDB is on");
@@ -55,7 +57,8 @@ app.delete("/user/logout", userController.logOut);
 app.delete("/user/delete/:id", userController.deleteUser);
 app.get("/user/session", passport.authenticateMiddleware(), userController.userInfo);
 
-app.post("/post/add", postController.addPost)
+app.post("/post/add", upload.array('file', 9), postController.addPost)
+app.get("/post", postController.getAllPosts)
 app.post("/post/edit/:id", postController.editPostByID)
 app.delete("/post/delete/:id", postController.deletePostByID)
 app.post("/test/:id", function(req, res) {
