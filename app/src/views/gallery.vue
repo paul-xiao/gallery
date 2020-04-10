@@ -1,5 +1,18 @@
 <template>
-      <v-row >
+
+     <div class="list">
+        <button @click="test">test</button>
+       <div v-for="item of data" :key="item._id" class="list-item">
+         <h1>{{item.title}}</h1>
+         <div class="content">
+            <div class="inner" v-for="file of item.files" :key="file.name">
+               <img :src="`/api/ipfs/${file.path}`" alt="" v-if="file.type && file.type.includes('image')">
+               <video :src="`/api/ipfs/${file.path}`" v-else></video>
+            </div>
+         </div>
+       </div>
+     </div>
+      <!-- <v-row >
         <v-col
           v-for="card in cards"
           :key="card.title"
@@ -33,8 +46,7 @@
           </v-card>
         </v-col>
         <input type="file" class="hidden" ref="fileInput" multiple @change="uploadInit" />
-      </v-row>
-
+      </v-row> -->
 </template>
 
 <script>
@@ -42,11 +54,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Gallery',
    data: () => ({
-      cards: [
-        { title: 'Pre-fab homes', src: 'https://cdn.vuetifyjs.com/images/cards/house.jpg', flex: 12 },
-        { title: 'Favorite road trips', src: 'https://cdn.vuetifyjs.com/images/cards/road.jpg', flex: 6 },
-        { title: 'Best airlines', src: 'https://cdn.vuetifyjs.com/images/cards/plane.jpg', flex: 6 },
-      ],
+      data: []
     }),
   props: {
     msg: String
@@ -63,12 +71,36 @@ export default {
       this.$store.commit('UPDATE_UPLOAD_STATUS', false)
     }
   },
+  mounted() {
+    // this.init()
+  },
   methods: {
+    init() {
+      this.$http.get('/post/').then(({data}) => {
+        console.log(data)
+        this.data = data
+      })
+    },
     uploadInit(e){
       const {files} = e.target
       this.$store.commit('UPDATE_UPLOAD_FILES', files)
       this.$router.push('/post')
+    },
+    test() {
+      this.$test.foo()
+
+      console.log(this.$test)
     }
   }
 }
 </script>
+<style lang="stylus" scoped>
+.list
+  display flex
+  &-item
+    color: #333
+    margin 20px
+    img, video 
+      width 200px
+      height 200px
+</style>

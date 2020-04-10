@@ -8,8 +8,10 @@ import clickOutside from './directives/click-outside'
 import components from './components'
 import $message from './components/message'
 import vuetify from './plugins/vuetify';
+import $test from './utils/t'
 
-
+$test.foo = $test.foo(111)
+Vue.prototype.$test = $test
 Vue.prototype.$http = $http
 Vue.prototype.$saveToIpfs = $saveToIpfs
 Vue.prototype.$message = $message

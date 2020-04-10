@@ -18,14 +18,7 @@ const router = new Router({
       component: include('index'),
       redirect: '/gallery',
       children: [
-        {
-          path: '/gallery',
-          name: 'gallery',
-          component: include('gallery'),
-          meta: {
-            auth: true
-          }
-        },
+
         {
           path: '/post',
           name: 'post',
@@ -45,6 +38,14 @@ const router = new Router({
       ],
       meta: {
         auth: true
+      }
+    },
+    {
+      path: '/gallery',
+      name: 'gallery',
+      component: include('gallery'),
+      meta: {
+        auth: false
       }
     },
     {

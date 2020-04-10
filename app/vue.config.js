@@ -2,6 +2,15 @@ module.exports = {
   "devServer": {
     "hot": true,
     "proxy": {
+      "/api/post": {
+        "target": "http://localhost:3001/",
+        "changeOrigin": true,
+        "ws": true,
+        "pathRewrite": {
+          "^/api": ""
+        },
+        "logLevel": "debug"
+      },
       "/api/user": {
         "target": "http://localhost:3001/",
         "changeOrigin": true,
