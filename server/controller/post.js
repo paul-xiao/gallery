@@ -1,30 +1,22 @@
 const Post = require("../model/Post");
 const ObjectId = require("mongoose").Types.ObjectId;
 const logger = require("../utils/logger");
-const { addFile } = require("../utils/ipfs");
+const { addFile, unpin, gc } = require("../utils/ipfs");
 
-exports.addPost = (req, res, next) => {
-  console.log(req.files);
-  const files = []
-  const files =  [...req.files.buffer]
-  req.files.forEach(async file => {
-    await addFile(Buffer.from(file.buffer))
+exports.addPost = async (req, res, next) => {
+  const files = [...req.files].map((e) => {
+    return {
+      name: e.originalname,
+      content: e.buffer,
+      type: e.mimetype,
+    };
+  });
+  await addFile(files)
     .then((data) => {
-      files.push({
-        name: file.originalname,
-        type: file.mimetype,
-        ...data
-      })
-      console.log(files)
-    })
-    .catch((err) => console.log(err));
-  })
-    
-
-
+      console.log(data)
       const post = new Post({
         title: req.body.title,
-        files: [...files],
+        files: data,
         desc: req.body.desc || "",
       });
 
@@ -41,50 +33,39 @@ exports.addPost = (req, res, next) => {
             message: err.message,
           });
         });
+    })
+    .catch((err) => console.log(err));
 };
-exports.editPostByID = (req, res) => {
-  const postId = req.params.id;
-  const { body } = req;
-  if (postId) {
-    Post.updateOne(
-      {
-        _id: postId,
-      },
-      body,
-      function (err) {
-        console.log(err);
-        if (err) {
-          res.status(500).send({
-            status: false,
-            message: err,
-          });
-        } else {
-          res.send({
-            status: true,
-            message: "Update success",
-          });
-        }
-      }
-    );
-  }
-};
+
 exports.deletePostByID = (req, res) => {
   const postId = req.params.id;
-  if (postId) {
-    Post.deleteOne({ _id: postId }, function (err) {
+  Post.findById(postId).then(async data => {
+    if(data) {
+    Post.deleteOne({ _id: postId }, async function (err) {
       if (err) {
         res.status(500).send({
           status: false,
           message: err,
         });
       } else {
+        // unpin
+        const { files } = data
+        await unpin(files)
+        console.log('done')
         res.send({
           status: true,
           message: "delete success",
         });
       }
     });
-  }
+    }else {
+      res.send({
+        status: false,
+        message: 'post not exist'
+      })
+    }
+
+  })
 };
 
 exports.getAllPosts = (req, res) => {

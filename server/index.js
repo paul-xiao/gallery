@@ -57,10 +57,28 @@ app.delete("/user/logout", userController.logOut);
 app.delete("/user/delete/:id", userController.deleteUser);
 app.get("/user/session", passport.authenticateMiddleware(), userController.userInfo);
 
+// post
 app.post("/post/add", upload.array('file', 9), postController.addPost)
 app.get("/post", postController.getAllPosts)
-app.post("/post/edit/:id", postController.editPostByID)
 app.delete("/post/delete/:id", postController.deletePostByID)
+
+// comment like
+app.post('comments/:id', (req, res) => {
+
+  // login check
+
+})
+
+app.post('like/:id', (req, res) => {
+
+ // login check
+ // like + 1 -1
+})
+
+
+
+
+
 app.post("/test/:id", function(req, res) {
   console.log(req.body.name)
   console.log(req.params)

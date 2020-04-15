@@ -1,7 +1,8 @@
 <template>
 
      <div class="list">
-        <button @click="test">test</button>
+        <v-btn color="primary" @click="test1">test1</v-btn>
+        <v-btn color="primary" @click="test2">test2</v-btn>
        <div v-for="item of data" :key="item._id" class="list-item">
          <h1>{{item.title}}</h1>
          <div class="content">
@@ -86,21 +87,24 @@ export default {
       this.$store.commit('UPDATE_UPLOAD_FILES', files)
       this.$router.push('/post')
     },
-    test() {
-      this.$test.foo()
-
-      console.log(this.$test)
+    test1() {
+      this.$test.foo().then(e => console.log(e)).catch(err => console.log(err))
+    },
+    test2() {
+      this.$test.poo('xxxx canceled')
     }
   }
 }
 </script>
 <style lang="stylus" scoped>
-.list
-  display flex
-  &-item
-    color: #333
-    margin 20px
-    img, video 
-      width 200px
-      height 200px
+span
+  color: #333
+// .list
+//   display flex
+//   &-item
+//     color: #333
+//     margin 20px
+//     img, video 
+//       width 200px
+//       height 200px
 </style>

@@ -1,5 +1,6 @@
 const config = require("../config");
 const ipfsClient = require("ipfs-http-client");
+const { info } = require("./logger");
 
 const ipfs = ipfsClient({
   host: config.IPFS_HOST,
@@ -9,24 +10,63 @@ const ipfs = ipfsClient({
 
 const foo = async () => {
   const v = await ipfs.version();
-  console.log('ipfs is on, version:',v.version);
+  console.log("ipfs is on, version:", v.version);
 };
 
-
 module.exports = {
- addFile(files){
-    return new Promise( async (resolve, reject) => {
+  addFile(files) {
+    return new Promise(async (resolve, reject) => {
       const source = ipfs.add([...files]);
+      const result = [];
       try {
         for await (const file of source) {
-          resolve(file)
+          result.push(file);
         }
+
+        resolve(
+          result.map((e, i) => {
+            const { name, type } = files[i];
+            const { path, size } = e;
+            return {
+              path,
+              size,
+              name,
+              type,
+            };
+          })
+        );
       } catch (err) {
-        reject(err)
+        reject(err);
       }
-    })
-}
-}
+    });
+  },
+  // unpin mutiple files
+  unpin: (files) => {
+      return new Promise(async(reslove, reject) => {
+        for(file of files) {
+          const hash = file.path
+          info(`unpinning '${hash}'`);
+          try {
+            // recursive: false
+            await ipfs.pin.rm(hash);
+          } catch (error) {
+            console.log(error)
+          }
+        }
+        info(`running gc`);
+        try {
+          let res = await ipfs.repo.gc()
+          console.log(res)
+          // for(let entry  of res ){
+          //   console.log(entry.cid.toString())
+          // }
+        } catch (error) {
+          console.log('err: '+ error.message)
+        }
+        reslove()
+      })
+  }
+};
 
 foo();
 // class SaveToIpfs {

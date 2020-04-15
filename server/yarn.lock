@@ -849,7 +849,7 @@ ipfs-core-utils@^0.0.1:
     err-code "^2.0.0"
     ipfs-utils "^1.0.0"
 
-ipfs-http-client@^43.0.0:
+ipfs-http-client@43.0.0:
   version "43.0.0"
   resolved "https://registry.yarnpkg.com/ipfs-http-client/-/ipfs-http-client-43.0.0.tgz#1c7904ee764d244ede9765ac066bbe36695284bc"
   integrity sha512-ZuL9MJDZX0oZij31igN/VZDID8KIfR8rkSFoQqkyU/vHvrALskvZI0Cy2MqdZWeCMIIp7beDesYPqbYuyWjVkw==
@@ -883,9 +883,9 @@ ipfs-http-client@^43.0.0:
     stream-to-it "^0.2.0"
 
 ipfs-utils@^1.0.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/ipfs-utils/-/ipfs-utils-1.2.1.tgz#1a2ef059ee475fb4584a98b1cb0999ab004a13d9"
-  integrity sha512-x0fn0VYibtwxenKAMHHi9SRuq2qw8yRWQPWcNXzXB7jIbd2eo0SoxFjtA2A+mEGKW3s8TI/GBaXEd+OiogiYTA==
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/ipfs-utils/-/ipfs-utils-1.2.4.tgz#209845db3f6493dbd185333eb09c5e9ee345ddc9"
+  integrity sha512-xUP7SmOAb50OHL8D2KasRHRBOtRdyHHerfCEJBmS9+qpe6wzpbhftdsZJ2UD2v7HXgi7IH9eTps5uPXKUd2aVg==
   dependencies:
     abort-controller "^3.0.0"
     buffer "^5.4.2"
@@ -1386,9 +1386,9 @@ nanoid@^2.1.11:
   integrity sha512-s/snB+WGm6uwi0WjsZdaVcuf3KJXlfGl2LcxgwkEwJF0D/BWzVWAZW/XY4bFaiR7s0Jk3FPvlnepg1H1b1UwlA==
 
 nanoid@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.0.2.tgz#37e91e6f5277ce22335be473e2a5db1bd96dd026"
-  integrity sha512-WOjyy/xu3199NlQiQWlx7VbspSFlGtOxa1bRX9ebmXOnp1fje4bJfjPs1wLQ8jZbJUfD+yceJmw879ZSaVJkdQ==
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.3.tgz#b2bcfcfda4b4d6838bc22a0c8dd3c0a17a204c20"
+  integrity sha512-Zw8rTOUfh6FlKgkEbHiB1buOF2zOPOQyGirABUWn+9Z7m9PpyoLVkh6Ksc53vBjndINQ2+9LfRPaHxb/u45EGg==
 
 negotiator@0.6.2:
   version "0.6.2"
