@@ -55,11 +55,9 @@ module.exports = {
         }
         info(`running gc`);
         try {
-          let res = await ipfs.repo.gc()
-          console.log(res)
-          // for(let entry  of res ){
-          //   console.log(entry.cid.toString())
-          // }
+          for await (const res of ipfs.repo.gc()) {
+            console.log(res)
+          }
         } catch (error) {
           console.log('err: '+ error.message)
         }

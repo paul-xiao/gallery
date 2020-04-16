@@ -10,8 +10,9 @@ const ipfs = ipfsClient({
 
 const gc = async () => {
   try {
-    let res = await ipfs.repo.gc()
-    console.log(res)
+    for await (const res of ipfs.repo.gc()) {
+      console.log(res)
+    }
   } catch (error) {
     console.log('err: '+ error.message)
   }
