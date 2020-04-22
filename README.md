@@ -13,3 +13,12 @@
 #### mongod windows
 
 mongod -dbpath "e:\workspace\mongodb\data"
+
+
+#### dockerlize
+
+compose
+
+- node app
+- ipfs
+- mongo

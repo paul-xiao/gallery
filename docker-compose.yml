@@ -1,0 +1,40 @@
+version: "3"
+services:
+  server:
+    container_name: gallery_server
+    restart: always
+    build: ./server/
+    ports:
+      - "3001:3001"
+    volumes:
+      - server:/server  # host_path_to : workdir
+    links:
+      - mongo
+    networks:
+      paultest:
+        aliases:
+          - server
+  mongo:
+    container_name: gallery_mongo
+    image: mongo
+    networks:
+      paultest:
+        aliases:
+          - mongo
+    ports:
+      - "27017:27017"
+  app:
+    container_name: gallery_app
+    restart: always
+    build: app/
+    ports:
+      - "3000:3000"
+    volumes:
+      - app:/app
+    networks:
+      paultest:
+        aliases:
+          - app
+networks:
+  paultest:
+    external: true
