@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <px-button type="primary">test</px-button>
     <router-view />
   </div>
 </template>

@@ -8,10 +8,8 @@ import clickOutside from './directives/click-outside'
 import components from './components'
 import $message from './components/message'
 import vuetify from './plugins/vuetify';
-import $test from './utils/t'
-
-$test.foo = $test.foo(111)
-Vue.prototype.$test = $test
+import pxui from 'pxui'
+import pxuiStyles from 'pxui/lib/pxui.css'
 Vue.prototype.$http = $http
 Vue.prototype.$saveToIpfs = $saveToIpfs
 Vue.prototype.$message = $message
@@ -29,6 +27,8 @@ router.beforeEach((to, from, next) => {
 Vue.directive('click-outside', clickOutside);
 // register components
 Vue.use(components)
+Vue.use(pxui)
+Vue.use(pxuiStyles)
 
 new Vue({
   router,

@@ -1,19 +1,5 @@
 <template>
-
-     <div class="list">
-        <v-btn color="primary" @click="test1">test1</v-btn>
-        <v-btn color="primary" @click="test2">test2</v-btn>
-       <div v-for="item of data" :key="item._id" class="list-item">
-         <h1>{{item.title}}</h1>
-         <div class="content">
-            <div class="inner" v-for="file of item.files" :key="file.name">
-               <img :src="`/api/ipfs/${file.path}`" alt="" v-if="file.type && file.type.includes('image')">
-               <video :src="`/api/ipfs/${file.path}`" v-else></video>
-            </div>
-         </div>
-       </div>
-     </div>
-      <!-- <v-row >
+     <v-row >
         <v-col
           v-for="card in cards"
           :key="card.title"
@@ -47,7 +33,7 @@
           </v-card>
         </v-col>
         <input type="file" class="hidden" ref="fileInput" multiple @change="uploadInit" />
-      </v-row> -->
+      </v-row>
 </template>
 
 <script>
@@ -55,7 +41,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'Gallery',
    data: () => ({
-      data: []
+      cards: []
     }),
   props: {
     msg: String
@@ -73,13 +59,13 @@ export default {
     }
   },
   mounted() {
-    // this.init()
+    this.init()
   },
   methods: {
     init() {
       this.$http.get('/post/').then(({data}) => {
         console.log(data)
-        this.data = data
+        this.cards = data
       })
     },
     uploadInit(e){
