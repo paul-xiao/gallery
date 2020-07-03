@@ -1,29 +1,118 @@
 <template>
   <div class="gallery">
-     <div class="item" v-for="(item, index) of lists" :key="index">
-       {{item.name}}
-     </div>
+    <scrollable-box :list="lists"></scrollable-box>
+    <gallery-list :list="galleryLists" />
   </div>
 </template>
 
 <script>
+import ScrollableBox from '../components/ScrollableBox'
+import GalleryList from '../components/GalleryList'
 export default {
   name: 'Gallery',
+  components: {
+    ScrollableBox,
+    GalleryList,
+  },
   data() {
     return {
-      lists: []
+      lists: [
+        {
+          name: '1',
+          url: 'https://img.yzcdn.cn/vant/apple-1.jpg',
+        },
+        {
+          name: '1',
+          url: 'https://img.yzcdn.cn/vant/apple-2.jpg',
+        },
+        {
+          name: '1',
+          url: 'https://img.yzcdn.cn/vant/apple-3.jpg',
+        },
+      ],
+      galleryLists: [
+        {
+          user: {
+            name: 'xx',
+            avatar: 'https://img.yzcdn.cn/vant/apple-3.jpg',
+          },
+          images: [
+            'https://img.yzcdn.cn/vant/apple-3.jpg',
+            'https://img.yzcdn.cn/vant/apple-2.jpg',
+          ],
+          likes: 1000,
+          content: 'contents',
+          comments: [
+            {
+              user: 'dummy1',
+              content: '瓜兮兮',
+              parentID: 1,
+            },
+            {
+              user: 'dummy2',
+              content: '哈哈哈',
+              parentID: 1,
+            },
+          ],
+          date: new Date(),
+        },
+        {
+          user: {
+            name: 'xx',
+            avatar: 'https://img.yzcdn.cn/vant/apple-3.jpg',
+          },
+          images: [
+            'https://img.yzcdn.cn/vant/apple-3.jpg',
+            'https://img.yzcdn.cn/vant/apple-2.jpg',
+          ],
+          likes: 1000,
+          content: 'contents',
+          comments: [
+            {
+              user: 'dummy1',
+              content: '瓜兮兮',
+              parentID: 1,
+            },
+            {
+              user: 'dummy2',
+              content: '哈哈哈',
+              parentID: 1,
+            },
+          ],
+          date: new Date(),
+        },
+        {
+          user: {
+            name: 'xx',
+            avatar: 'https://img.yzcdn.cn/vant/apple-3.jpg',
+          },
+          images: [
+            'https://img.yzcdn.cn/vant/apple-3.jpg',
+            'https://img.yzcdn.cn/vant/apple-2.jpg',
+          ],
+          likes: 1000,
+          content: 'contents',
+          comments: [
+            {
+              user: 'dummy1',
+              content: '瓜兮兮',
+              parentID: 1,
+            },
+            {
+              user: 'dummy2',
+              content: '哈哈哈',
+              parentID: 1,
+            },
+          ],
+          date: new Date(),
+        },
+      ],
     }
   },
   props: {
-    msg: String
+    msg: String,
   },
-  mounted() {
-    const AMOUNT =  100
-    for(let i =0 ; i< AMOUNT; i++) {
-      this.lists.push({
-        name: i.toString()
-      })
-    }
-  }
+  mounted() {},
 }
 </script>
+<style lang="stylus"></style>

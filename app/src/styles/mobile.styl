@@ -11,6 +11,8 @@ $mobile-font = 1rem
     z-index: 0
   .theme-container
     height 100%
+    display flex
+    flex-direction: column
     .theme-header
       width: 100%
       padding: 0
@@ -97,7 +99,7 @@ $mobile-font = 1rem
             pointer-events: none
     .theme-content
       width: "calc(100% - %s)" % ($base-padding*2)
-      height: "calc(100% - %s)" % ($head-height*2 + $base-padding*2 + 2)
+      flex:1
       min-height: auto
       overflow: auto
       padding: $base-padding

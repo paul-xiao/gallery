@@ -5,16 +5,15 @@
 </template>
 
 <script>
-
 export default {
-  name: 'App'
+  name: 'App',
 }
 </script>
 
 <style lang="stylus">
 @import '~@/styles/index.styl'
 html,body
-  height: 100%;  
+  height: 100%;
   width: 100%;
   margin: 0;
 #app
@@ -23,6 +22,6 @@ html,body
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  height: 100%;  
-  width: 100%; 
+  height: 100%;
+  width: 100%;
 </style>
