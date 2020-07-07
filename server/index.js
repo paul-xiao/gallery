@@ -1,68 +1,77 @@
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const session = require("express-session");
-const config = require("./config");
-const logger = require("./utils/logger");
-const mongoose = require("mongoose");
-const MongoStore = require("connect-mongo")(session);
-const bodyParser = require("body-parser");
-const passport = require("./config/passport");
+const express = require('express')
+const cookieParser = require('cookie-parser')
+const session = require('express-session')
+const config = require('./config')
+const logger = require('./utils/logger')
+const mongoose = require('mongoose')
+const MongoStore = require('connect-mongo')(session)
+const bodyParser = require('body-parser')
+const passport = require('./config/passport')
+const upload = require('./utils/upload')
+const path = require('path')
 
-const app = express();
+const app = express()
 
-app.use(cookieParser());
-app.use(bodyParser.json()); // create application/json parser
-app.use(bodyParser.urlencoded({ extended: false })); // // create application/x-www-form-urlencoded parser
-
+app.use(cookieParser())
+app.use(bodyParser.json({ limit: '50mb' })) // create application/json parser
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true })) // // create application/x-www-form-urlencoded parser
 mongoose.connect(config.DB).then(() => {
-  logger.info("MongoDB is on");
-});
+  logger.info('MongoDB is on')
+})
 
-const expires = 1000 * 60 * 30; // 30min
+const expires = 1000 * 60 * 30 // 30min
 const sessionStorage = new MongoStore({
-  mongooseConnection: mongoose.connection
-});
+  mongooseConnection: mongoose.connection,
+})
 
 const sessionOpts = {
   // 设置密钥
-  secret: "gallery", // Forces the session to be saved back to the session store
+  secret: 'gallery', // Forces the session to be saved back to the session store
   resave: false, // Forces a session that is "uninitialized" to be saved to the store.
   saveUninitialized: true, // 设置会话cookie名, 默认是connect.sid
-  key: "gallery_sid",
+  key: 'gallery_sid',
   store: sessionStorage, // If secure is set to true, and you access your site over HTTP, the cookie will not be set.
-  cookie: { maxAge: expires * 2, secure: false }
-};
+  cookie: { maxAge: expires * 2, secure: false },
+}
 
-app.use(session(sessionOpts));
+app.use(session(sessionOpts))
 // init passport
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.initialize())
+app.use(passport.session())
 
-// app.use(function(req, res, next) {
-//   console.log(req.session)
-//   next()
-// })
+//static
 
-const userController = require("./controller/user");
-const postController = require("./controller/post");
-app.get("/", function(req, res) {
-  res.send("hello");
-});
-app.post("/user/signup", userController.signUp);
-app.post("/user/signin", userController.signIn);
-app.post("/user/update", userController.updateUserInfo);
-app.delete("/user/logout", userController.logOut);
-app.get("/user/session", passport.authenticateMiddleware(), userController.userInfo);
+app.use(express.static(path.join(__dirname, 'uploads')))
 
-app.post("addpost",passport.authenticateMiddleware(), postController.addPost)
-app.listen(config.SERVER.PORT, async err => {
+//controller
+const userController = require('./controller/user')
+const postController = require('./controller/post')
+const commentController = require('./controller/comment')
+
+// user
+app.post('/user/signup', userController.signUp)
+app.post('/user/signin', userController.signIn)
+app.post('/user/update', userController.updateUserInfo)
+app.delete('/user/logout', userController.logOut)
+app.get(
+  '/user/session',
+  passport.authenticateMiddleware(),
+  userController.userInfo
+)
+
+//posts
+app.post('/post/add', upload.array('file', 9), postController.addPost)
+app.get('/post/list', postController.getPostList)
+app.delete('/post/delete', postController.rmFromPostList)
+
+//comments
+app.post('/comment/add', commentController.AddComment)
+
+// server
+app.listen(config.SERVER.PORT, async (err) => {
   if (err) {
-    logger.error(err);
+    logger.error(err)
   } else {
-    logger.info(`Server runing on: `, `http://127.0.0.1:${config.SERVER.PORT}`);
+    logger.info(`Server runing on: `, `http://127.0.0.1:${config.SERVER.PORT}`)
   }
-});
-
-app.get('/ip', function(req, res) {
-  res.send(req.ip)
 })

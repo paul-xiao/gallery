@@ -4,11 +4,13 @@
       <div class="top-bar">
         <div class="left">
           <div class="avatar">
-            <img :src="item.user.avatar" alt="" />
+            <img :src="item.author.avatar" alt="" />
           </div>
           <div>
-            <div class="name">{{ item.user.name }}</div>
-            <div class="date">{{ item.date.toLocaleDateString() }}</div>
+            <div class="name">{{ item.author.username }}</div>
+            <div class="date">
+              {{ new Date(item.createdAt).toLocaleDateString() }}
+            </div>
           </div>
         </div>
         <div class="right">
@@ -17,13 +19,13 @@
       </div>
       <div class="images">
         <van-swipe height="200">
-          <van-swipe-item v-for="(image, index) in item.images" :key="index">
+          <van-swipe-item v-for="(image, index) in item.files" :key="index">
             <img v-lazy="image" width="100%" height="100%" />
           </van-swipe-item>
         </van-swipe>
       </div>
       <div class="status-bar">
-        <span class="total-likes">2000</span>
+        <span class="total-likes">{{ item.likes }}</span>
         <div>
           <van-icon name="like-o" />
           <van-icon name="chat-o" />
@@ -31,10 +33,12 @@
         </div>
       </div>
       <div class="content">
-        {{ item.content }}
+        {{ item.desc }}
       </div>
-      <div class="total-commnets">222</div>
-      <div class="top-coments">
+      <div class="total-commnets">
+        {{ item.comments && item.comments.length }}
+      </div>
+      <div class="top-coments" v-if="item.comments && !!item.comments.length">
         <div
           class="comment"
           v-for="comment of item.comments"
@@ -47,9 +51,6 @@
             <van-icon name="chat-o" />
           </div>
         </div>
-      </div>
-      <div class="commnet-box">
-        <van-field v-model="value" placeholder="开始评论" />
       </div>
     </div>
   </div>

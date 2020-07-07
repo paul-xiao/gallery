@@ -2,31 +2,28 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 // Define collection and schema for Course
-var Post = new Schema(
+var Comments = new Schema(
   {
-    author: {
+    postId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Post',
+    },
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    title: {
+    content: {
       type: String,
       required: true,
     },
-    files: {
-      type: Array,
-      required: true,
-    },
-    desc: {
+    parentId: {
       type: String,
-    },
-    likes: {
-      type: Number,
     },
   },
   {
     timestamps: true,
-    collection: 'post',
+    collection: 'comments',
   }
 )
 
-module.exports = mongoose.model('Post', Post)
+module.exports = mongoose.model('Comments', Comments)

@@ -1,74 +1,79 @@
 <template>
-  <div class="profile">
-    <Form @submit="handleSubmit" @reset="handleReset">
-      <template slot="title">Profile</template>
-      <template slot="main">
-            <div class="avatar" @click="startUpload">
-                <img v-if="formData.avatar" :src="formData.avatar" alt="">
-                <icon-user v-else class="default-icon" />
-            </div>
-            <Input type="text" name="username" readonly="readonly" v-model="formData.username"/>
-            <Input type="text" name="nickname" v-model="formData.nickname"/>
-            <Input type="text" name="region" v-model="formData.region"/>
-            <Textarea name="intro" v-model="formData.intro" />
-      </template>
-    </Form>
-        <input type="file" class="hidden" ref="fileInput" @change="uploadInit" />
-  </div>
+  <van-form @submit="onSubmit">
+    <van-uploader
+      v-model="avatar"
+      :after-read="afterRead"
+      :max-count="1"
+      :deletable="false"
+    />
+
+    <van-field
+      v-model="username"
+      name="username"
+      label="用户名"
+      placeholder="用户名"
+      readonly
+    />
+    <van-field
+      v-model="nickname"
+      type="nickname"
+      name="nickname"
+      label="昵称"
+      placeholder="昵称"
+    />
+    <van-field
+      v-model="desc"
+      rows="2"
+      name="desc"
+      autosize
+      label="描述"
+      type="textarea"
+      maxlength="50"
+      placeholder="请输入描述"
+      show-word-limit
+    />
+    <div style="margin: 16px;">
+      <van-button round block type="info" native-type="submit">
+        提交
+      </van-button>
+    </div>
+  </van-form>
 </template>
 <script>
 import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
-      formData: {
-        username: '',
-        avatar: '',
-        nickname: '',
-        region: '',
-        intro: ''
-      }
+      avatar: [],
+      username: '',
+      nickname: '',
+      desc: '',
     }
   },
   computed: {
-    ...mapGetters([
-      'userinfo'
-    ])
+    ...mapGetters(['userinfo']),
   },
-  watch: {
-   formData: {
-     handler(val) {
-      console.log(val);
-    },
-    immediate: true,
-    deep: true
-   }
-  },
-  mounted() {
-    this.init()
+  created() {
+    this.username = this.userinfo.username
   },
   methods: {
-    init() {
-      Object.assign(this.formData, this.userinfo)
+    onSubmit(values) {
+      console.log('submit', values)
     },
-    handleSubmit() {
-       this.$store.dispatch('UPDATE_USER_INFO', this.formData)
-    },
-    handleReset() {
+    afterRead(file) {
+      this.avatar[0].status = 'uploading'
+      this.avatar[0].message = '上传中...'
 
+      setTimeout(() => {
+        this.avatar[0].status = 'failed'
+        this.avatar[0].message = '上传失败'
+      }, 1000)
     },
-    startUpload() {
-      this.$refs.fileInput.click()
-    },
-    uploadInit(e) {
-      let files = [...e.target.files];
-      this.$saveToIpfs(files).then(file => {
-        Object.assign(this.formData, {
-          avatar: `/api/ipfs/${file.path}`
-        })
-        this.$store.commit('UPDATE_USER_STATE', this.formData)
-      }).catch(err => console.log(err))
-    },
-  }
+  },
 }
 </script>
+<style lang="stylus" scoped>
+/deep/ .van-uploader__upload
+  border-radius: 50%
+</style>

@@ -1,7 +1,6 @@
-const User = require("../model/User");
+const User = require('../model/User')
 const logger = require('../utils/logger')
-const passport = require("../config/passport");
-
+const passport = require('../config/passport')
 
 /**
  * [user signUp]
@@ -12,35 +11,35 @@ exports.signUp = (req, res) => {
   console.log(req.isAuthenticated())
   const newUser = new User({
     username: req.body.username,
-    password: req.body.password
-  });
+    password: req.body.password,
+  })
   User.findOne(
     {
-      username: req.body.username
+      username: req.body.username,
     },
     (err, example) => {
-      if (err) console.log(err);
+      if (err) console.log(err)
       if (example) {
         res.send({
-          message: "User already exist"
-        });
+          message: 'User already exist',
+        })
       } else {
         newUser
           .save()
-          .then(data => {
+          .then((data) => {
             res.json({
-              message: "Successful created new user."
-            });
+              message: 'Successful created new user.',
+            })
           })
-          .catch(err => {
+          .catch((err) => {
             res.status(500).send({
-              message: err.message
-            });
-          });
+              message: err.message,
+            })
+          })
       }
     }
-  );
-};
+  )
+}
 
 /**
  * [signIn]
@@ -48,24 +47,27 @@ exports.signUp = (req, res) => {
  * @param {String} password
  */
 
-exports.signIn = function(req, res, next){
-  passport.authenticate('local', function(err, user, info) {
-    if (err) { return next(err) }
+exports.signIn = function (req, res, next) {
+  passport.authenticate('local', function (err, user, info) {
+    if (err) {
+      return next(err)
+    }
     if (!user) {
       return res.send({
         status: false,
-        message: info.message
-      });
+        message: info.message,
+      })
     }
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
+    req.logIn(user, function (err) {
+      if (err) {
+        return next(err)
+      }
       return res.send({
         status: true,
-        message: 'login successed'
-      });
-    });
-  })(req, res, next);
-
+        message: 'login successed',
+      })
+    })
+  })(req, res, next)
 }
 /**
  * [userInfo]
@@ -73,17 +75,16 @@ exports.signIn = function(req, res, next){
  * @param {String} password
  */
 
-
 exports.userInfo = (req, res) => {
-  const username  = req.user.username
+  const username = req.user.username
   User.findOne(
     {
-      username: username
+      username: username,
     },
     (err, result) => {
-      if (err) console.log(err);
+      if (err) console.log(err)
       if (result) {
-        const {username, avatar, intro, region, nickname, createdAt} = result
+        const { username, avatar, intro, region, nickname, createdAt } = result
         res.send({
           status: true,
           username,
@@ -91,21 +92,21 @@ exports.userInfo = (req, res) => {
           intro,
           region,
           nickname,
-          createdAt
-        });
+          createdAt,
+        })
       }
-    })
-};
+    }
+  )
+}
 
 /**
  * [signIn]
  * @param none
  */
 exports.logOut = (req, res) => {
-  req.session.destroy();
-  res.send({ result: 'OK', message: 'Session destroyed' });
+  req.session.destroy()
+  res.send({ result: 'OK', message: 'Session destroyed' })
   logger.info('Session destroyed')
-
 }
 
 /**
@@ -118,21 +119,25 @@ exports.updateUserInfo = (req, res) => {
   const data = req.body
   console.log(JSON.stringify(data))
   const username = req.user.username
-  if(username){
-    User.update({
-      username
-    },data, function(err){
-      if(err) {
-        res.status(500).send({
-          status:false,
-          message: err
-        })
-      }else {
-        res.send({
-          status: true,
-          message: 'Update success'
-        })
+  if (username) {
+    User.update(
+      {
+        username,
+      },
+      data,
+      function (err) {
+        if (err) {
+          res.status(500).send({
+            status: false,
+            message: err,
+          })
+        } else {
+          res.send({
+            status: true,
+            message: 'Update success',
+          })
+        }
       }
-    })
+    )
   }
-};
+}

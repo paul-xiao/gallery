@@ -26,11 +26,16 @@ export default {
     },
   },
   mounted() {
-    const unit = document
-      .querySelector('.scrollable-box-item')
-      .getBoundingClientRect().width
-    const baseMargin = 5
-    this.width = (unit + baseMargin) * this.list.length + 'px'
+    setTimeout(() => {
+      console.log(document.querySelector('.scrollable-box-item'))
+
+      const unit =
+        document.querySelector('.scrollable-box-item') &&
+        document.querySelector('.scrollable-box-item').getBoundingClientRect()
+          .width
+      const baseMargin = 5
+      this.width = (unit + baseMargin) * this.list.length + 'px'
+    }, 500)
   },
 }
 </script>

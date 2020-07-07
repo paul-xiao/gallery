@@ -23,39 +23,63 @@ const router = new Router({
           name: 'gallery',
           component: include('gallery'),
           meta: {
-            auth: true
-          }
+            auth: true,
+          },
         },
         {
           path: '/profile',
           name: 'profile',
           component: include('profile'),
           meta: {
-            auth: true
-          }
+            auth: true,
+          },
+        },
+        {
+          path: '/post',
+          name: 'post',
+          component: include('post'),
+          meta: {
+            auth: true,
+          },
+        },
+        {
+          path: '/info',
+          name: 'info',
+          component: include('info'),
+          meta: {
+            auth: true,
+          },
+        },
+        {
+          path: '/search',
+          name: 'search',
+          component: include('search'),
+          meta: {
+            auth: true,
+          },
         },
       ],
       meta: {
-        auth: true
-      }
+        auth: true,
+      },
     },
     {
       path: '/signin',
       name: 'signin',
       component: include('signin'),
       meta: {
-        auth: false
-      }
+        auth: false,
+      },
     },
     {
       path: '/signup',
       name: 'signup',
       component: include('signup'),
       meta: {
-        auth: false
-      }
-    }
-  ]
+        auth: false,
+      },
+    },
+  ],
 })
 
 export default router
