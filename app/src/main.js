@@ -11,10 +11,13 @@ import pxui from 'pxui'
 import Vant from 'vant'
 import 'vant/lib/index.css'
 import { Lazyload } from 'vant'
+import { Toast, Notify } from 'vant'
 
 Vue.use(Lazyload)
 Vue.use(Vant)
 Vue.prototype.$http = $http
+Vue.prototype.$toast = Toast
+Vue.prototype.$notify = Notify
 // Vue.prototype.$saveToIpfs = $saveToIpfs
 Vue.prototype.$message = $message
 Vue.config.productionTip = false

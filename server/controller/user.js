@@ -1,4 +1,5 @@
 const User = require('../model/User')
+const Avatar = require('../model/Avatar')
 const logger = require('../utils/logger')
 const passport = require('../config/passport')
 
@@ -75,28 +76,23 @@ exports.signIn = function (req, res, next) {
  * @param {String} password
  */
 
-exports.userInfo = (req, res) => {
-  const username = req.user.username
-  User.findOne(
-    {
-      username: username,
-    },
-    (err, result) => {
-      if (err) console.log(err)
-      if (result) {
-        const { username, avatar, intro, region, nickname, createdAt } = result
-        res.send({
-          status: true,
-          username,
-          avatar,
-          intro,
-          region,
-          nickname,
-          createdAt,
-        })
-      }
+exports.userInfo = async (req, res) => {
+  try {
+    const { username } = req.user
+    const userinfo = await User.findOne({ username })
+    const { _id, avatar, desc, nickname } = userinfo
+    const result = {
+      username,
+      userId: _id,
+      status: true,
+      avatar,
+      desc,
+      nickname,
     }
-  )
+    res.send(result)
+  } catch (error) {
+    res.send(error)
+  }
 }
 
 /**
@@ -115,29 +111,32 @@ exports.logOut = (req, res) => {
  * @param {String} password
  */
 
-exports.updateUserInfo = (req, res) => {
-  const data = req.body
-  console.log(JSON.stringify(data))
-  const username = req.user.username
-  if (username) {
-    User.update(
-      {
-        username,
-      },
-      data,
-      function (err) {
-        if (err) {
-          res.status(500).send({
-            status: false,
-            message: err,
-          })
-        } else {
-          res.send({
-            status: true,
-            message: 'Update success',
-          })
-        }
-      }
-    )
+exports.updateUserInfo = async (req, res) => {
+  try {
+    const { nickname, desc } = req.body
+
+    await User.update({ _id: req.user._id }, { nickname, desc })
+    console.log(req.body)
+
+    res.send({
+      message: 'userinfo updated',
+    })
+  } catch (error) {
+    res.send(error)
+  }
+}
+
+exports.updateAvatar = async (req, res) => {
+  try {
+    const { filename } = req.file
+
+    await User.update({ _id: req.user._id }, { avatar: `/static/${filename}` })
+
+    res.send({
+      message: 'avatar updated',
+      avatar: `/static/${filename}`,
+    })
+  } catch (error) {
+    res.send(error)
   }
 }

@@ -20,6 +20,7 @@
         <van-button round block type="info" native-type="submit">
           提交
         </van-button>
+        <router-link to="/signup">注册</router-link>
       </div>
     </van-form>
   </div>
@@ -54,9 +55,12 @@ export default {
       this.$http
         .post('/user/signin', this.formData)
         .then(({ data }) => {
+          console.log(data)
           if (data.status) {
             this.init()
           } else {
+            console.log(data.message)
+
             Notify(data.message)
           }
         })

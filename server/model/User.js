@@ -1,60 +1,63 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const passportLocalMongoose = require('passport-local-mongoose');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const passportLocalMongoose = require('passport-local-mongoose')
 
-var bcrypt = require('bcryptjs');
+var bcrypt = require('bcryptjs')
 
 // Define collection and schema for Course
-var User = new Schema({
+var User = new Schema(
+  {
     username: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     password: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     avatar: {
-        type: String
+      type: String,
     },
     nickname: {
-        type: String
+      type: String,
     },
     region: {
-        type: String
+      type: String,
     },
-    intro: {
-        type: String
-    }
-},{
+    desc: {
+      type: String,
+    },
+  },
+  {
     timestamps: true,
-    collection: 'user'
-});
+    collection: 'user',
+  }
+)
 
-User.plugin(passportLocalMongoose);
+User.plugin(passportLocalMongoose)
 
 User.pre('save', function (next) {
-    var user = this;
-    if (this.isModified('password') || this.isNew) {
-        bcrypt.genSalt(10, function (err, salt) {
-            if (err) {
-                return next(err);
-            }
-            bcrypt.hash(user.password, salt, function (err, hash) {
-                if (err) {
-                    return next(err);
-                }
-                user.password = hash;
-                next();
-            });
-        });
-    } else {
-        return next();
-    }
-});
- 
-User.methods.comparePassword =  function (passw, cb) {
-    return bcrypt.compareSync(passw, this.password);
-};
+  var user = this
+  if (this.isModified('password') || this.isNew) {
+    bcrypt.genSalt(10, function (err, salt) {
+      if (err) {
+        return next(err)
+      }
+      bcrypt.hash(user.password, salt, function (err, hash) {
+        if (err) {
+          return next(err)
+        }
+        user.password = hash
+        next()
+      })
+    })
+  } else {
+    return next()
+  }
+})
 
-module.exports = mongoose.model('User', User);
+User.methods.comparePassword = function (passw, cb) {
+  return bcrypt.compareSync(passw, this.password)
+}
+
+module.exports = mongoose.model('User', User)

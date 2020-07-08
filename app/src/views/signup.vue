@@ -1,31 +1,49 @@
 <template>
   <div class="signin">
-    <div class="form">
-      <h4>Signup</h4>
-      <input type="text" v-model="formData.username" placeholder="username">
-      <input type="password" v-model="formData.password" placeholder="pwd">
-      <button type="button" @click.prevent="handleSubmit">signin</button>
-      <router-link to="/signin">signin</router-link>
-    </div>
+    <van-form @submit="onSubmit">
+      <van-field
+        v-model="formData.username"
+        name="用户名"
+        label="用户名"
+        placeholder="用户名"
+        :rules="[{ required: true, message: '请填写用户名' }]"
+      />
+      <van-field
+        v-model="formData.password"
+        type="password"
+        name="密码"
+        label="密码"
+        placeholder="密码"
+        :rules="[{ required: true, message: '请填写密码' }]"
+      />
+      <div style="margin: 16px;">
+        <van-button round block type="info" native-type="submit">
+          提交
+        </van-button>
+        <router-link to="/signin">登录</router-link>
+      </div>
+    </van-form>
   </div>
 </template>
 <script>
+import { Notify } from 'vant'
+
 export default {
   data() {
     return {
       formData: {
         username: '',
-        password: ''
-      }
+        password: '',
+      },
     }
   },
   methods: {
-    handleSubmit() {
+    onSubmit() {
       this.$http.post('/user/signup', this.formData).then(() => {
-        alert('you are on')
+        Notify('you are on')
       })
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="stylus" scoped>
@@ -43,13 +61,13 @@ export default {
     height: 35px;
     width: 200px;
     outline: none
-  
-  input 
+
+  input
     width: calc( 200px - 20px);
     padding: 0 10px;
     box-shadow: 0 0 1px #607d8b;
-  
-  button 
+
+  button
     background: lightblue;
     color: #FFF;
     &:active, &:hover

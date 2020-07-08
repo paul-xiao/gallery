@@ -4,7 +4,9 @@
       <div class="top-bar">
         <div class="left">
           <div class="avatar">
-            <img :src="item.author.avatar" alt="" />
+            <img
+              :src="item.author.avatar ? item.author.avatar : defaultAvatar"
+            />
           </div>
           <div>
             <div class="name">{{ item.author.username }}</div>
@@ -62,6 +64,7 @@ export default {
     return {
       width: null,
       value: '',
+      defaultAvatar: require('../assets/icons/user.svg'),
     }
   },
   props: {

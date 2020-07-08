@@ -1,11 +1,6 @@
 <template>
   <van-form @submit="onSubmit">
-    <van-uploader
-      v-model="avatar"
-      :after-read="afterRead"
-      :max-count="1"
-      :deletable="false"
-    />
+    <van-uploader v-model="avatar" :after-read="afterRead" :max-count="1" />
 
     <van-field
       v-model="username"
@@ -36,12 +31,15 @@
       <van-button round block type="info" native-type="submit">
         提交
       </van-button>
+      <br />
+      <van-button round block type="default" @click="handleLogout">
+        注销
+      </van-button>
     </div>
   </van-form>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-
 export default {
   data() {
     return {
@@ -55,20 +53,47 @@ export default {
     ...mapGetters(['userinfo']),
   },
   created() {
-    this.username = this.userinfo.username
+    const { username, avatar, nickname, desc } = this.userinfo
+    this.username = username
+    this.nickname = nickname
+    this.desc = desc
+    this.avatar = [{ url: avatar }]
   },
   methods: {
     onSubmit(values) {
-      console.log('submit', values)
+      const { nickname, desc } = values
+      this.$http
+        .post('/user/update', { nickname, desc })
+        .then(() => {
+          this.$toast('更新成功')
+        })
+        .catch((err) => {
+          this.$notify(err)
+        })
     },
-    afterRead(file) {
+    afterRead(avatar) {
       this.avatar[0].status = 'uploading'
       this.avatar[0].message = '上传中...'
-
-      setTimeout(() => {
-        this.avatar[0].status = 'failed'
-        this.avatar[0].message = '上传失败'
-      }, 1000)
+      const formData = new FormData()
+      formData.append('avatar', avatar.file)
+      this.$http
+        .post('/user/update', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        .then((res) => {
+          this.avatar[0].status = 'done'
+          this.avatar[0].message = ''
+          console.log(res)
+        })
+        .catch(() => {
+          this.avatar[0].status = 'failed'
+          this.avatar[0].message = '上传失败'
+        })
+    },
+    handleLogout() {
+      this.$store.dispatch('LOG_OUT')
     },
   },
 }

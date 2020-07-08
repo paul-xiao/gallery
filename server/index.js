@@ -51,6 +51,7 @@ const commentController = require('./controller/comment')
 // user
 app.post('/user/signup', userController.signUp)
 app.post('/user/signin', userController.signIn)
+app.post('/user/avatar', upload.single('avatar'), userController.updateAvatar)
 app.post('/user/update', userController.updateUserInfo)
 app.delete('/user/logout', userController.logOut)
 app.get(
