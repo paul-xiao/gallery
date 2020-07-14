@@ -1,47 +1,53 @@
 <template>
   <div class="gallery">
     <scrollable-box :list="lists"></scrollable-box>
-    <gallery-list :list="galleryLists" />
+    <gallery-list :list="galleryLists" @reload="init" />
   </div>
 </template>
 
 <script>
-import ScrollableBox from '../components/ScrollableBox'
-import GalleryList from '../components/GalleryList'
-import { mapGetters } from 'vuex'
+import ScrollableBox from "../components/ScrollableBox";
+import GalleryList from "../components/GalleryList";
+import { mapGetters } from "vuex";
 export default {
-  name: 'Gallery',
+  name: "Gallery",
   components: {
     ScrollableBox,
-    GalleryList,
+    GalleryList
   },
   data() {
     return {
       lists: [],
-      galleryLists: [],
-    }
+      galleryLists: []
+    };
   },
   props: {
-    msg: String,
+    msg: String
   },
   computed: {
-    ...mapGetters(['userinfo']),
+    ...mapGetters(["userinfo"])
   },
   created() {
-    const { username } = this.userinfo
-    username &&
-      this.$http.get('/post/list').then(({ data }) => {
-        this.galleryLists = data
-        this.lists = data
-          .filter((item, index) => index < 5) //前五条数据
-          .map((l) => {
-            return {
-              name: l.title,
-              url: l.files[0],
-            }
-          })
-      })
+    this.init();
   },
-}
+  methods: {
+    init() {
+      const { username } = this.userinfo;
+      username &&
+        this.$http.get("/post/list").then(({ data }) => {
+          this.galleryLists = data;
+          if (!data) return;
+          this.lists = data
+            .filter((item, index) => index < 5) //前五条数据
+            .map(l => {
+              return {
+                name: l.title,
+                url: l.files[0]
+              };
+            });
+        });
+    }
+  }
+};
 </script>
 <style lang="stylus"></style>

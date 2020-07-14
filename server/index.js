@@ -14,10 +14,17 @@ const app = express()
 
 app.use(cookieParser())
 app.use(bodyParser.json({ limit: '50mb' })) // create application/json parser
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true })) // // create application/x-www-form-urlencoded parser
-mongoose.connect(config.DB).then(() => {
-  logger.info('MongoDB is on')
-})
+app.use(
+  bodyParser.urlencoded({
+    limit: '50mb',
+    extended: true,
+  })
+) // // create application/x-www-form-urlencoded parser
+mongoose
+  .connect(config.DB, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    logger.info('MongoDB is on')
+  })
 
 const expires = 1000 * 60 * 30 // 30min
 const sessionStorage = new MongoStore({
@@ -62,6 +69,7 @@ app.get(
 
 //posts
 app.post('/post/add', upload.array('file', 9), postController.addPost)
+app.post('/post/like', postController.toggleLikes) //点赞
 app.get('/post/list', postController.getPostList)
 app.delete('/post/delete', postController.rmFromPostList)
 

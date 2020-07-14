@@ -19,9 +19,7 @@ var Post = new Schema(
     desc: {
       type: String,
     },
-    likes: {
-      type: Number,
-    },
+    likes: Array,
   },
   {
     timestamps: true,

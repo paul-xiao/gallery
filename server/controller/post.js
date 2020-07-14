@@ -1,7 +1,6 @@
 const Post = require('../model/Post')
-const Comments = require('../model/Comments')
-const User = require('../model/User')
 const logger = require('../utils/logger')
+const fs = require('fs')
 
 exports.addPost = async (req, res) => {
   console.log(req.user)
@@ -24,18 +23,21 @@ exports.getPostList = async (req, res) => {
         avatar: 1,
       })
       .exec()
+
     res.send(
       allPosts.map((post) => {
-        const { createdAt, files, author, title, desc } = post
-        let file = files.map((f) => {
+        let file = post.files.map((f) => {
           return `/static/${f.filename}`
         })
         return {
-          createdAt,
+          _id: post._id,
+          createdAt: post.createdAt,
           files: file,
-          author,
-          title,
-          desc,
+          author: post.author,
+          title: post.title,
+          desc: post.desc,
+          likes: post.likes.length,
+          flag: post.likes.includes(req.user._id),
         }
       })
     )
@@ -44,20 +46,76 @@ exports.getPostList = async (req, res) => {
   }
 }
 
-exports.rmFromPostList = (req, res) => {
-  console.log(req.body._id)
+exports.rmFromPostList = async (req, res) => {
+  try {
+    console.log(req.body._id)
 
-  Post.deleteOne({
-    _id: req.body._id,
-  })
-    .then(() => {
-      res.send(`file ${req.body._id} is deleted`)
+    const { files } = await Post.findOne({
+      _id: req.body._id,
     })
-    .catch((err) => {
-      res.send(err)
-    })
+    console.log(files.path)
+    try {
+      await fs.unlinkSync(`${files.path}`)
+      logger.info('--------------------------')
+      await Post.deleteOne({
+        _id: req.body._id,
+      })
+    } catch (error) {
+      logger.error(error)
+    }
+
+    res.send(`file ${files.filename} is deleted`)
+  } catch (error) {
+    res.send(error)
+  }
 }
 
 exports.getLatestPosts = async (req, res) => {
   const latestPost = Post.find({})
+}
+
+exports.toggleLikes = async (req, res) => {
+  try {
+    const post = await Post.findOne({
+      _id: req.body.postId,
+    })
+    logger.info(post.likes)
+    let flag = post.likes.includes(req.user._id)
+    let likes = post.likes.length
+    logger.error('init', likes, flag)
+
+    if (!flag) {
+      await Post.updateOne(
+        { _id: req.body.postId },
+        {
+          $addToSet: {
+            likes: req.user._id,
+          },
+        }
+      )
+      likes++
+      logger.info('添加', likes, true)
+      res.send({
+        flag: true,
+        likes: likes,
+      })
+    } else {
+      await Post.updateOne(
+        { _id: req.body.postId },
+        {
+          $pull: {
+            likes: req.user._id,
+          },
+        }
+      )
+      likes--
+      logger.warn('删除', likes, false)
+      res.send({
+        flag: false,
+        likes: likes,
+      })
+    }
+  } catch (error) {
+    res.send(error)
+  }
 }
