@@ -4,11 +4,11 @@ const Schema = mongoose.Schema
 // Define collection and schema for Course
 var Comments = new Schema(
   {
-    postId: {
+    post: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Post',
     },
-    userId: {
+    from: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
@@ -16,8 +16,9 @@ var Comments = new Schema(
       type: String,
       required: true,
     },
-    parentId: {
-      type: String,
+    parent: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
     },
   },
   {
