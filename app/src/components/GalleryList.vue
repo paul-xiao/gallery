@@ -25,7 +25,21 @@
         </div>
         <div class="status-bar">
           <span class="total-likes">
-            {{ item.likes }}
+            <van-image
+              round
+              width="20"
+              height="20"
+              v-if="item.likes[0]"
+              :src="item.likes[0].avatar"
+            />
+            <van-image
+              round
+              width="20"
+              height="20"
+              v-if="item.likes[1]"
+              :src="item.likes[1].avatar"
+            />
+            {{ item.likes ? item.likes.length : 0 }}
             <small>likes</small>
           </span>
           <div class="opts">
@@ -35,19 +49,31 @@
           </div>
         </div>
         <div class="content">{{ item.desc }}</div>
-        <div class="total-commnets">{{ item.comments && item.comments.length }}</div>
         <div class="top-coments" v-if="item.comments && !!item.comments.length">
-          <div class="comment" v-for="comment of item.comments" :key="comment.user">
-            <div class="comment-user">{{ comment.user }}</div>
+          <div class="total-commnets">{{ item.comments && item.comments.length }} comments</div>
+          <div class="comment" v-for="comment of item.comments" :key="comment.content">
+            <div class="comment-user">{{ comment.username }}</div>
             <div class="comment-content">{{ comment.content }}</div>
             <div>
-              <van-icon name="like-o" />
-              <van-icon name="chat-o" />
+              <van-icon name="good-job-o" @click="handleCommentLike" />
             </div>
           </div>
         </div>
+        <van-field placeholder="说点什么" @click="handleCommentShow(item)" disabled />
       </van-skeleton>
     </div>
+    <van-popup v-model="comment" position="bottom">
+      <div class="comment-popup">
+        <van-field v-model="value" placeholder="说点什么" autofocus ref="comment" />
+        <van-button
+          v-if="comment"
+          type="info"
+          square
+          native-type="submit"
+          @click="handleCommentSubmit"
+        >提交</van-button>
+      </div>
+    </van-popup>
     <van-action-sheet
       v-model="show"
       :actions="actions"
@@ -68,6 +94,7 @@ export default {
       width: null,
       value: "",
       loading: true,
+      comment: false,
       defaultAvatar: require("../assets/icons/user.svg"),
       show: false,
       actions: [{ name: "删除", color: "#ee0a24" }]
@@ -122,6 +149,41 @@ export default {
             message: "删除成功",
             icon: "https://img.yzcdn.cn/vant/logo.png"
           });
+        });
+    },
+    handleCommentShow(item) {
+      this.comment = true;
+      this.currentItem = item;
+      this.$nextTick(() => {
+        console.log(document.querySelector(".comment-popup input"));
+        document.querySelector(".comment-popup input").focus();
+      });
+    },
+    handleCommentSubmit() {
+      this.$http
+        .post("/post/comment", {
+          postId: this.currentItem._id,
+          comment: this.value
+        })
+        .then(({ data }) => {
+          console.log(data);
+          this.currentItem.comments = data.comments;
+          Toast("评论成功");
+          this.comment = false;
+        });
+    },
+    handleCommentLike() {},
+    handleCommentReply() {
+      this.$http
+        .post("/post/reply", {
+          postId: this.currentItem._id,
+          comment: this.value
+        })
+        .then(({ data }) => {
+          console.log(data);
+          this.currentItem.comments = data.comments;
+          Toast("评论成功");
+          this.comment = false;
         });
     }
   }
@@ -193,6 +255,12 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
+  align-items: center;
+
+  .total-likes {
+    display: flex;
+    align-items: center;
+  }
 
   .opts {
     i {
@@ -235,6 +303,14 @@ export default {
       flex: 1;
       text-align: left;
     }
+  }
+}
+
+.comment-popup {
+  display: flex;
+
+  /deep/ .van-button {
+    width: 80px;
   }
 }
 </style>

@@ -130,7 +130,10 @@ exports.updateAvatar = async (req, res) => {
   try {
     const { filename } = req.file
 
-    await User.update({ _id: req.user._id }, { avatar: `/static/${filename}` })
+    await User.updateOne(
+      { _id: req.user._id },
+      { avatar: `/static/${filename}` }
+    )
 
     res.send({
       message: 'avatar updated',

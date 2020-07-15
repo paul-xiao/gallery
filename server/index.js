@@ -21,7 +21,11 @@ app.use(
   })
 ) // // create application/x-www-form-urlencoded parser
 mongoose
-  .connect(config.DB, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(config.DB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  })
   .then(() => {
     logger.info('MongoDB is on')
   })
@@ -70,6 +74,7 @@ app.get(
 //posts
 app.post('/post/add', upload.array('file', 9), postController.addPost)
 app.post('/post/like', postController.toggleLikes) //点赞
+app.post('/post/comment', postController.addComment) //评论
 app.get('/post/list', postController.getPostList)
 app.delete('/post/delete', postController.rmFromPostList)
 

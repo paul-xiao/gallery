@@ -36,7 +36,8 @@ exports.getPostList = async (req, res) => {
           author: post.author,
           title: post.title,
           desc: post.desc,
-          likes: post.likes.length,
+          likes: post.likes,
+          comments: post.comments,
           flag: post.likes.includes(req.user._id),
         }
       })
@@ -48,15 +49,13 @@ exports.getPostList = async (req, res) => {
 
 exports.rmFromPostList = async (req, res) => {
   try {
-    console.log(req.body._id)
-
     const { files } = await Post.findOne({
       _id: req.body._id,
     })
-    console.log(files.path)
     try {
-      await fs.unlinkSync(`${files.path}`)
-      logger.info('--------------------------')
+      for (const file of files) {
+        await fs.unlinkSync(`${file.path}`)
+      }
       await Post.deleteOne({
         _id: req.body._id,
       })
@@ -79,42 +78,69 @@ exports.toggleLikes = async (req, res) => {
     const post = await Post.findOne({
       _id: req.body.postId,
     })
-    logger.info(post.likes)
-    let flag = post.likes.includes(req.user._id)
-    let likes = post.likes.length
-    logger.error('init', likes, flag)
-
+    let flag = post.likes.find((like) => like.id === req.user._id)
     if (!flag) {
-      await Post.updateOne(
-        { _id: req.body.postId },
+      const updatedpost = await Post.findByIdAndUpdate(
+        req.body.postId,
         {
           $addToSet: {
-            likes: req.user._id,
+            likes: {
+              id: req.user._id,
+              name: req.user.username,
+              avatar: req.user.avatar,
+            },
           },
-        }
+        },
+        { new: true }
       )
-      likes++
-      logger.info('添加', likes, true)
+      console.log(updatedpost.likes)
       res.send({
         flag: true,
-        likes: likes,
+        likes: updatedpost.likes,
       })
     } else {
-      await Post.updateOne(
-        { _id: req.body.postId },
+      const updatedpost = await Post.findByIdAndUpdate(
+        req.body.postId,
         {
           $pull: {
-            likes: req.user._id,
+            likes: {
+              id: req.user._id,
+            },
           },
-        }
+        },
+        { new: true }
       )
-      likes--
-      logger.warn('删除', likes, false)
+      console.log(updatedpost.likes)
+
       res.send({
         flag: false,
-        likes: likes,
+        likes: updatedpost.likes,
       })
     }
+  } catch (error) {
+    res.send(error)
+  }
+}
+
+exports.addComment = async (req, res) => {
+  try {
+    const updatedpost = await Post.findByIdAndUpdate(
+      req.body.postId,
+      {
+        $addToSet: {
+          comments: {
+            userId: req.user._id,
+            username: req.user.username,
+            avatar: req.user.avatar,
+            content: req.body.comment,
+          },
+        },
+      },
+      { new: true }
+    )
+    res.send({
+      comments: updatedpost.comments,
+    })
   } catch (error) {
     res.send(error)
   }
