@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 // Define collection and schema for Course
 var Comments = new Schema(
   {
-    post: {
+    postId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Post',
     },
@@ -20,6 +20,7 @@ var Comments = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
+    likes: Array,
   },
   {
     timestamps: true,

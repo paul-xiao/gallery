@@ -35,14 +35,22 @@ export default {
       const { username } = this.userinfo;
       username &&
         this.$http.get("/post/list").then(({ data }) => {
-          this.galleryLists = data;
+          this.galleryLists = data.map(d => {
+            const topComments = d.comments.slice(0, 5);
+            return {
+              ...d,
+              topComments
+            };
+          });
           if (!data) return;
+          console.log(data);
+
           this.lists = data
             .filter((item, index) => index < 5) //前五条数据
             .map(l => {
               return {
                 name: l.title,
-                url: l.files[0]
+                url: l.files && l.files[0]
               };
             });
         });

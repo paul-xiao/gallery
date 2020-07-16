@@ -1,9 +1,9 @@
 const Post = require('../model/Post')
 const logger = require('../utils/logger')
 const fs = require('fs')
+const Comments = require('../model/Comments')
 
 exports.addPost = async (req, res) => {
-  console.log(req.user)
   const newPost = new Post({
     author: req.user._id,
     title: req.body.title,
@@ -17,19 +17,25 @@ exports.addPost = async (req, res) => {
 exports.getPostList = async (req, res) => {
   // let result
   try {
+    let result = []
     const allPosts = await Post.find({})
       .populate('author', {
         username: 1,
         avatar: 1,
       })
       .exec()
-
-    res.send(
-      allPosts.map((post) => {
+    try {
+      for (post of allPosts) {
+        const comments = await Comments.find({
+          postId: post._id,
+        }).populate('from', {
+          username: 1,
+          avatar: 1,
+        })
         let file = post.files.map((f) => {
           return `/static/${f.filename}`
         })
-        return {
+        let p = {
           _id: post._id,
           createdAt: post.createdAt,
           files: file,
@@ -37,11 +43,15 @@ exports.getPostList = async (req, res) => {
           title: post.title,
           desc: post.desc,
           likes: post.likes,
-          comments: post.comments,
+          comments: comments,
           flag: post.likes.includes(req.user._id),
         }
-      })
-    )
+        result.push(p)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    res.send(result)
   } catch (error) {
     res.send(error)
   }
@@ -56,6 +66,7 @@ exports.rmFromPostList = async (req, res) => {
       for (const file of files) {
         await fs.unlinkSync(`${file.path}`)
       }
+      await Comments.deleteMany({ postId: req.body._id })
       await Post.deleteOne({
         _id: req.body._id,
       })
@@ -110,7 +121,6 @@ exports.toggleLikes = async (req, res) => {
         },
         { new: true }
       )
-      console.log(updatedpost.likes)
 
       res.send({
         flag: false,

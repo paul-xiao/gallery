@@ -74,7 +74,8 @@ app.get(
 //posts
 app.post('/post/add', upload.array('file', 9), postController.addPost)
 app.post('/post/like', postController.toggleLikes) //点赞
-app.post('/post/comment', postController.addComment) //评论
+app.post('/post/comment', commentController.AddComment) //评论
+app.post('/post/comment/like', commentController.toggleCommentLikes) //评论
 app.get('/post/list', postController.getPostList)
 app.delete('/post/delete', postController.rmFromPostList)
 

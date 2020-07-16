@@ -5,10 +5,10 @@
         <div class="top-bar">
           <div class="left">
             <div class="avatar">
-              <img :src="item.author.avatar ? item.author.avatar : defaultAvatar" />
+              <img :src="item.author && item.author.avatar ? item.author.avatar : defaultAvatar" />
             </div>
             <div>
-              <div class="name">{{ item.author.username }}</div>
+              <div class="name">{{ item.author && item.author.username }}</div>
               <div class="date">{{ new Date(item.createdAt).toLocaleDateString() }}</div>
             </div>
           </div>
@@ -29,15 +29,15 @@
               round
               width="20"
               height="20"
-              v-if="item.likes[0]"
-              :src="item.likes[0].avatar"
+              v-if="item.likes  && item.likes[0]"
+              :src="item.likes  && item.likes[0].avatar"
             />
             <van-image
               round
               width="20"
               height="20"
-              v-if="item.likes[1]"
-              :src="item.likes[1].avatar"
+              v-if="item.likes  && item.likes[1]"
+              :src="item.likes  && item.likes[1].avatar"
             />
             {{ item.likes ? item.likes.length : 0 }}
             <small>likes</small>
@@ -49,21 +49,62 @@
           </div>
         </div>
         <div class="content">{{ item.desc }}</div>
-        <div class="top-coments" v-if="item.comments && !!item.comments.length">
+        <div class="top-comments" v-if="item.comments && !!item.comments.length">
           <div class="total-commnets">{{ item.comments && item.comments.length }} comments</div>
-          <div class="comment" v-for="comment of item.comments" :key="comment.content">
-            <div class="comment-user">{{ comment.username }}</div>
+          <div class="comment" v-for="comment of item.topComments" :key="comment._id">
+            <div class="top">
+              <div class="comment-user">
+                <van-image
+                  round
+                  width="20"
+                  height="20"
+                  v-if="comment.from"
+                  :src="comment.from.avatar"
+                />
+                {{ comment.from.username }}
+              </div>
+              <div class="comment-likes">
+                <van-icon name="good-job-o" @click="handleCommentLike(comment)" />
+                <span>{{comment.likes.length}}</span>
+              </div>
+            </div>
             <div class="comment-content">{{ comment.content }}</div>
-            <div>
-              <van-icon name="good-job-o" @click="handleCommentLike" />
+            <div class="reply">
+              <span>Xxx 回复：</span>
+              <span>xxxxxxxxx</span>
             </div>
           </div>
         </div>
         <van-field placeholder="说点什么" @click="handleCommentShow(item)" disabled />
       </van-skeleton>
     </div>
-    <van-popup v-model="comment" position="bottom">
-      <div class="comment-popup">
+    <van-popup v-model="comment" position="bottom" class="comment-popup">
+      <div class="comment-popup-content top-comments">
+        <div class="comment" v-for="comment of currentItem.comments" :key="comment._id">
+          <div class="top">
+            <div class="comment-user">
+              <van-image
+                round
+                width="20"
+                height="20"
+                v-if="comment.from"
+                :src="comment.from.avatar"
+              />
+              {{ comment.from.username }}
+            </div>
+            <div class="comment-likes">
+              <van-icon name="good-job-o" @click="handleCommentLike(comment)" />
+              <span>{{comment.likes.length}}</span>
+            </div>
+          </div>
+          <div class="comment-content">{{ comment.content }}</div>
+          <div class="reply">
+            <span>Xxx 回复：</span>
+            <span>xxxxxxxxx</span>
+          </div>
+        </div>
+      </div>
+      <div class="comment-popup-input">
         <van-field v-model="value" placeholder="说点什么" autofocus ref="comment" />
         <van-button
           v-if="comment"
@@ -93,6 +134,7 @@ export default {
     return {
       width: null,
       value: "",
+      currentItem: {},
       loading: true,
       comment: false,
       defaultAvatar: require("../assets/icons/user.svg"),
@@ -163,16 +205,28 @@ export default {
       this.$http
         .post("/post/comment", {
           postId: this.currentItem._id,
-          comment: this.value
+          content: this.value
+        })
+        .then(({ data }) => {
+          this.currentItem.comments = data.comments;
+          this.currentItem.topComments = data.comments.slice(0, 5);
+          document.querySelector(".comment-popup input").value = "";
+          Toast("评论成功");
+        });
+    },
+    handleCommentLike(comment) {
+      this.$http
+        .post("/post/comment/like", {
+          commentId: comment._id
         })
         .then(({ data }) => {
           console.log(data);
-          this.currentItem.comments = data.comments;
-          Toast("评论成功");
+          comment.likes = data.likes;
+          comment.flag = data.flag;
+          data.flag ? Toast("点赞成功") : Toast("点赞取消");
           this.comment = false;
         });
     },
-    handleCommentLike() {},
     handleCommentReply() {
       this.$http
         .post("/post/reply", {
@@ -284,23 +338,49 @@ export default {
   color: #777;
 }
 
-.top-coments {
+.top-comments {
   padding: 15px 0;
 
   .comment {
-    display: flex;
-    align-items: center;
-    line-height: 1.5;
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      line-height: 1.5;
+    }
+
+    .reply {
+      text-align: left;
+      text-indent: 1em;
+      display: none;
+    }
 
     &-user {
       color: #333;
-      padding-right: 15px;
+      padding-right: 14px;
+      display: flex;
+      align-items: center;
+
+      /deep/ .van-image {
+        margin-right: 5px;
+      }
+    }
+
+    &-likes {
+      display: flex;
+      align-items: center;
+
+      span {
+        margin-left: 5px;
+        color: #777;
+      }
     }
 
     &-content {
       color: #777;
-      font-size: 14px;
+      font-size: 16px;
       flex: 1;
+      line-height: 1.5;
       text-align: left;
     }
   }
@@ -308,9 +388,22 @@ export default {
 
 .comment-popup {
   display: flex;
+  flex-direction: column;
+  height: 80%;
 
-  /deep/ .van-button {
-    width: 80px;
+  &-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  &-input {
+    display: flex;
+
+    /deep/ .van-button {
+      width: 80px;
+    }
   }
 }
 </style>

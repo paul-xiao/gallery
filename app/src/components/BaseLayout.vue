@@ -8,37 +8,42 @@
   </div>
 </template>
 <script>
-import Header from '../components/Header'
-import Footer from '../components/Footer'
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 export default {
-  name: 'BaseLayout',
+  name: "BaseLayout",
   components: {
     [Header.name]: Header,
-    [Footer.name]: Footer,
+    [Footer.name]: Footer
   },
   computed: {
     site() {
       return {
-        title: 'Home',
-      }
+        title: "Home"
+      };
     },
     config() {
-      return this.$themeConfig
+      return this.$themeConfig;
     },
     page() {
-      return this.$page
-    },
+      return this.$page;
+    }
   },
   mounted() {
-    document.addEventListener('touchmove', this.handleTouchMove)
+    document.addEventListener("touchmove", this.handleTouchMove);
   },
   methods: {
     handleTouchMove() {
-      document.body.scrollTop = 0
-    },
+      document.body.scrollTop = 0;
+    }
   },
   beforeDestory() {
-    document.removeEventListener('touchmove', this.handleTouchMove)
-  },
-}
+    document.removeEventListener("touchmove", this.handleTouchMove);
+  }
+};
 </script>
+<style lang="stylus" scoped>
+.theme-container {
+  max-width: 750px;
+}
+</style>
