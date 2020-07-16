@@ -51,7 +51,7 @@
         <div class="content">{{ item.desc }}</div>
         <div class="top-comments" v-if="item.comments && !!item.comments.length">
           <div class="total-commnets">{{ item.comments && item.comments.length }} comments</div>
-          <div class="comment" v-for="comment of item.topComments" :key="comment._id">
+          <div class="comment" v-for="comment of item.comments" :key="comment._id">
             <div class="top">
               <div class="comment-user">
                 <van-image
@@ -64,14 +64,24 @@
                 {{ comment.from.username }}
               </div>
               <div class="comment-likes">
+                <van-icon name="chat-o" @click="handleCommentReply(comment)" />
                 <van-icon name="good-job-o" @click="handleCommentLike(comment)" />
                 <span>{{comment.likes.length}}</span>
               </div>
             </div>
             <div class="comment-content">{{ comment.content }}</div>
-            <div class="reply">
-              <span>Xxx 回复：</span>
-              <span>xxxxxxxxx</span>
+            <div class="reply" v-if="comment.reply">
+              <div class="reply-item" v-for=" reply of comment.reply" :key="reply.id">
+                <div class="reply-item-content">
+                  <span>{{reply.from}} 回复 {{reply.to}}：</span>
+                  {{reply.content}}
+                </div>
+                <div class="reply-item-opt">
+                  <van-icon name="chat-o" />
+                  <van-icon name="good-job-o" @click="handleCommentLike(comment)" />
+                  <span>{{comment.likes.length}}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -98,9 +108,18 @@
             </div>
           </div>
           <div class="comment-content">{{ comment.content }}</div>
-          <div class="reply">
-            <span>Xxx 回复：</span>
-            <span>xxxxxxxxx</span>
+          <div class="reply" v-if="comment.reply">
+            <div class="reply-item" v-for=" reply of comment.reply" :key="reply.id">
+              <div class="reply-item-content">
+                <span>{{reply.from}} 回复 {{reply.to}}：</span>
+                {{reply.content}}
+              </div>
+              <div class="reply-item-opt">
+                <van-icon name="chat-o" />
+                <van-icon name="good-job-o" @click="handleCommentLike(comment)" />
+                <span>{{comment.likes.length}}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -112,6 +131,23 @@
           square
           native-type="submit"
           @click="handleCommentSubmit"
+        >提交</van-button>
+      </div>
+    </van-popup>
+    <van-popup v-model="reply" position="bottom" class="reply-popup">
+      <div class="reply-popup-input">
+        <van-field
+          v-model="value"
+          :placeholder="`回复：${currentComment && currentComment.from && currentComment.from.username}`"
+          autofocus
+          ref="reply"
+        />
+        <van-button
+          v-if="reply"
+          type="info"
+          square
+          native-type="submit"
+          @click="handleCommentReplySubmit"
         >提交</van-button>
       </div>
     </van-popup>
@@ -135,8 +171,10 @@ export default {
       width: null,
       value: "",
       currentItem: {},
+      currentComment: {},
       loading: true,
       comment: false,
+      reply: false,
       defaultAvatar: require("../assets/icons/user.svg"),
       show: false,
       actions: [{ name: "删除", color: "#ee0a24" }]
@@ -157,6 +195,25 @@ export default {
     }, 3000);
   },
   methods: {
+    buildTree(source, id, parent_id) {
+      let temp = {};
+      let tree = {};
+      for (let i in source) {
+        temp[source[i][id]] = source[i];
+      }
+      for (let i in temp) {
+        let parentId = temp[i][parent_id];
+        if (parentId) {
+          if (temp[parentId] && !temp[parentId].reply) {
+            temp[parentId].reply = new Array();
+          }
+          temp[parentId].reply.push(temp[i]);
+        } else {
+          tree[temp[i][id]] = temp[i];
+        }
+      }
+      return Object.values(tree);
+    },
     toggleLikes(item) {
       if (!item.disabled) {
         item.disabled = true;
@@ -197,8 +254,8 @@ export default {
       this.comment = true;
       this.currentItem = item;
       this.$nextTick(() => {
-        console.log(document.querySelector(".comment-popup input"));
-        document.querySelector(".comment-popup input").focus();
+        let el = document.querySelector(".comment-popup input");
+        el && el.focus();
       });
     },
     handleCommentSubmit() {
@@ -227,17 +284,32 @@ export default {
           this.comment = false;
         });
     },
-    handleCommentReply() {
+    handleCommentReply(commnet) {
+      this.reply = true;
+      this.currentComment = commnet;
+    },
+    handleCommentReplySubmit() {
+      console.log(this.currentComment);
       this.$http
-        .post("/post/reply", {
-          postId: this.currentItem._id,
-          comment: this.value
+        .post("/post/comment", {
+          postId: this.currentComment.postId,
+          content: this.value,
+          parent: this.currentComment._id
         })
         .then(({ data }) => {
           console.log(data);
-          this.currentItem.comments = data.comments;
+
+          // this.currentItem.comments = data.comments;
+          // this.currentItem.topComments = data.comments.slice(0, 5);
+          this.currentItem.comments = this.buildTree(
+            data.comments,
+            "_id",
+            "parentId"
+          );
+          this.currentItem.topComments = this.currentItem.comments.slice(0, 5);
+          document.querySelector(".reply-popup input").value = "";
+          this.reply = false;
           Toast("评论成功");
-          this.comment = false;
         });
     }
   }
@@ -338,6 +410,30 @@ export default {
   color: #777;
 }
 
+.reply {
+  text-align: left;
+  color: #999;
+  background: #f2f2f2;
+  padding: 10px;
+
+  &-item {
+    display: flex;
+    margin: 5px 0;
+
+    &-content {
+      flex: 1;
+    }
+
+    &-opt {
+      text-align: right;
+
+      i {
+        width: 20px;
+      }
+    }
+  }
+}
+
 .top-comments {
   padding: 15px 0;
 
@@ -347,12 +443,6 @@ export default {
       justify-content: space-between;
       align-items: center;
       line-height: 1.5;
-    }
-
-    .reply {
-      text-align: left;
-      text-indent: 1em;
-      display: none;
     }
 
     &-user {
@@ -382,6 +472,16 @@ export default {
       flex: 1;
       line-height: 1.5;
       text-align: left;
+    }
+  }
+}
+
+.reply-popup {
+  &-input {
+    display: flex;
+
+    /deep/ .van-button {
+      width: 80px;
     }
   }
 }

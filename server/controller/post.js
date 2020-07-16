@@ -32,6 +32,32 @@ exports.getPostList = async (req, res) => {
           username: 1,
           avatar: 1,
         })
+        const buildTree = (source, id, parent_id) => {
+          let temp = {}
+          let tree = {}
+          for (let i in source) {
+            temp[source[i][id]] = source[i]
+          }
+          for (let i in temp) {
+            let parentId = temp[i][parent_id]
+
+            if (parentId) {
+              if (temp[parentId] && !temp[parentId].reply) {
+                console.log('Array')
+                temp[parentId].reply = new Array()
+              }
+              temp[parentId].reply.push(temp[i])
+              console.log(typeof temp[parentId].reply)
+            } else {
+              console.log('call')
+              tree[temp[i][id]] = temp[i]
+            }
+          }
+          return Object.values(tree)
+        }
+        let commentTree = buildTree(comments, '_id', 'parentId')
+        console.log('1111111111111111')
+
         let file = post.files.map((f) => {
           return `/static/${f.filename}`
         })
@@ -43,7 +69,7 @@ exports.getPostList = async (req, res) => {
           title: post.title,
           desc: post.desc,
           likes: post.likes,
-          comments: comments,
+          comments: commentTree,
           flag: post.likes.includes(req.user._id),
         }
         result.push(p)

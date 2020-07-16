@@ -36,7 +36,8 @@ export default {
       username &&
         this.$http.get("/post/list").then(({ data }) => {
           this.galleryLists = data.map(d => {
-            const topComments = d.comments.slice(0, 5);
+            const topComments =
+              d.comments.length > 5 ? d.comments.slice(0, 5) : d.comments;
             return {
               ...d,
               topComments

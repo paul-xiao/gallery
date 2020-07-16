@@ -5,6 +5,9 @@ const Comments = require('../model/Comments')
  * @param {*} res
  */
 exports.AddComment = async (req, res) => {
+  console.log(req.body)
+  console.log(req.user)
+
   const newComment = new Comments({
     postId: req.body.postId, // 评论文章
     from: req.user._id, // 评论人

@@ -16,7 +16,7 @@ var Comments = new Schema(
       type: String,
       required: true,
     },
-    parent: {
+    parentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
