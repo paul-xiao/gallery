@@ -16,15 +16,18 @@ module.exports = (source, id, parent_id) => {
 
     if (parentId) {
       if (temp[parentId] && !temp[parentId].reply) {
-        console.log('Array')
         temp[parentId].reply = new Array()
+        console.log('0')
       }
       temp[parentId].reply.push(temp[i])
-      console.log(typeof temp[parentId].reply)
+      console.log('1')
     } else {
-      console.log('call')
+      console.log('=====> 2')
       tree[temp[i][id]] = temp[i]
     }
   }
+  console.log('3')
+  console.log(tree)
+
   return Object.values(tree)
 }

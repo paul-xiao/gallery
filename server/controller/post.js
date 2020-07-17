@@ -2,6 +2,7 @@ const Post = require('../model/Post')
 const logger = require('../utils/logger')
 const fs = require('fs')
 const Comments = require('../model/Comments')
+const buildTree = require('../utils/buildTree')
 
 exports.addPost = async (req, res) => {
   const newPost = new Post({
@@ -17,7 +18,11 @@ exports.addPost = async (req, res) => {
 exports.getPostList = async (req, res) => {
   // let result
   try {
+    if (!req.user) {
+      res.send('Unauthorized')
+    }
     let result = []
+
     const allPosts = await Post.find({})
       .populate('author', {
         username: 1,
@@ -25,39 +30,18 @@ exports.getPostList = async (req, res) => {
       })
       .exec()
     try {
-      for (post of allPosts) {
+      for (const post of allPosts) {
         const comments = await Comments.find({
           postId: post._id,
-        }).populate('from', {
-          username: 1,
-          avatar: 1,
         })
-        const buildTree = (source, id, parent_id) => {
-          let temp = {}
-          let tree = {}
-          for (let i in source) {
-            temp[source[i][id]] = source[i]
-          }
-          for (let i in temp) {
-            let parentId = temp[i][parent_id]
-
-            if (parentId) {
-              if (temp[parentId] && !temp[parentId].reply) {
-                console.log('Array')
-                temp[parentId].reply = new Array()
-              }
-              temp[parentId].reply.push(temp[i])
-              console.log(typeof temp[parentId].reply)
-            } else {
-              console.log('call')
-              tree[temp[i][id]] = temp[i]
-            }
-          }
-          return Object.values(tree)
-        }
+          .populate('from', {
+            username: 1,
+            avatar: 1,
+          })
+          .exec()
+        console.log('---start--')
         let commentTree = buildTree(comments, '_id', 'parentId')
-        console.log('1111111111111111')
-
+        console.log('---end--')
         let file = post.files.map((f) => {
           return `/static/${f.filename}`
         })
@@ -75,7 +59,7 @@ exports.getPostList = async (req, res) => {
         result.push(p)
       }
     } catch (error) {
-      console.log(error)
+      res.send(error)
     }
     res.send(result)
   } catch (error) {
