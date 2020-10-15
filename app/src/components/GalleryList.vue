@@ -5,11 +5,19 @@
         <div class="top-bar">
           <div class="left">
             <div class="avatar">
-              <img :src="item.author && item.author.avatar ? item.author.avatar : defaultAvatar" />
+              <img
+                :src="
+                  item.author && item.author.avatar
+                    ? item.author.avatar
+                    : defaultAvatar
+                "
+              />
             </div>
             <div>
               <div class="name">{{ item.author && item.author.username }}</div>
-              <div class="date">{{ new Date(item.createdAt).toLocaleDateString() }}</div>
+              <div class="date">
+                {{ new Date(item.createdAt).toLocaleDateString() }}
+              </div>
             </div>
           </div>
           <div class="right">
@@ -29,29 +37,42 @@
               round
               width="20"
               height="20"
-              v-if="item.likes  && item.likes[0]"
-              :src="item.likes  && item.likes[0].avatar"
+              v-if="item.likes && item.likes[0]"
+              :src="item.likes && item.likes[0].avatar"
             />
             <van-image
               round
               width="20"
               height="20"
-              v-if="item.likes  && item.likes[1]"
-              :src="item.likes  && item.likes[1].avatar"
+              v-if="item.likes && item.likes[1]"
+              :src="item.likes && item.likes[1].avatar"
             />
             {{ item.likes ? item.likes.length : 0 }}
             <small>likes</small>
           </span>
           <div class="opts">
-            <van-icon name="like-o" @click="toggleLikes(item)" :class="{active:item.flag}" />
+            <van-icon
+              name="like-o"
+              @click="toggleLikes(item)"
+              :class="{ active: item.flag }"
+            />
             <van-icon name="chat-o" />
             <van-icon name="share" />
           </div>
         </div>
         <div class="content">{{ item.desc }}</div>
-        <div class="top-comments" v-if="item.comments && !!item.comments.length">
-          <div class="total-commnets">{{ item.comments && item.comments.length }} comments</div>
-          <div class="comment" v-for="comment of item.comments" :key="comment._id">
+        <div
+          class="top-comments"
+          v-if="item.comments && !!item.comments.length"
+        >
+          <div class="total-commnets">
+            {{ item.comments && item.comments.length }} comments
+          </div>
+          <div
+            class="comment"
+            v-for="comment of item.comments"
+            :key="comment._id"
+          >
             <div class="top">
               <div class="comment-user">
                 <van-image
@@ -65,32 +86,50 @@
               </div>
               <div class="comment-likes">
                 <van-icon name="chat-o" @click="handleCommentReply(comment)" />
-                <van-icon name="good-job-o" @click="handleCommentLike(comment)" />
-                <span>{{comment.likes.length}}</span>
+                <van-icon
+                  name="good-job-o"
+                  @click="handleCommentLike(comment)"
+                />
+                <span>{{ comment.likes.length }}</span>
               </div>
             </div>
             <div class="comment-content">{{ comment.content }}</div>
             <div class="reply" v-if="comment.reply">
-              <div class="reply-item" v-for=" reply of comment.reply" :key="reply.id">
+              <div
+                class="reply-item"
+                v-for="reply of comment.reply"
+                :key="reply.id"
+              >
                 <div class="reply-item-content">
-                  <span>{{reply.from}} 回复 {{reply.to}}：</span>
-                  {{reply.content}}
+                  <span>{{ reply.from }} 回复 {{ reply.to }}：</span>
+                  {{ reply.content }}
                 </div>
                 <div class="reply-item-opt">
                   <van-icon name="chat-o" />
-                  <van-icon name="good-job-o" @click="handleCommentLike(comment)" />
-                  <span>{{comment.likes.length}}</span>
+                  <van-icon
+                    name="good-job-o"
+                    @click="handleCommentLike(comment)"
+                  />
+                  <span>{{ comment.likes.length }}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <van-field placeholder="说点什么" @click="handleCommentShow(item)" disabled />
+        <van-field
+          placeholder="说点什么"
+          @click="handleCommentShow(item)"
+          disabled
+        />
       </van-skeleton>
     </div>
     <van-popup v-model="comment" position="bottom" class="comment-popup">
       <div class="comment-popup-content top-comments">
-        <div class="comment" v-for="comment of currentItem.comments" :key="comment._id">
+        <div
+          class="comment"
+          v-for="comment of currentItem.comments"
+          :key="comment._id"
+        >
           <div class="top">
             <div class="comment-user">
               <van-image
@@ -104,41 +143,58 @@
             </div>
             <div class="comment-likes">
               <van-icon name="good-job-o" @click="handleCommentLike(comment)" />
-              <span>{{comment.likes.length}}</span>
+              <span>{{ comment.likes.length }}</span>
             </div>
           </div>
           <div class="comment-content">{{ comment.content }}</div>
           <div class="reply" v-if="comment.reply">
-            <div class="reply-item" v-for=" reply of comment.reply" :key="reply.id">
+            <div
+              class="reply-item"
+              v-for="reply of comment.reply"
+              :key="reply.id"
+            >
               <div class="reply-item-content">
-                <span>{{reply.from}} 回复 {{reply.to}}：</span>
-                {{reply.content}}
+                <span>{{ reply.from }} 回复 {{ reply.to }}：</span>
+                {{ reply.content }}
               </div>
               <div class="reply-item-opt">
                 <van-icon name="chat-o" />
-                <van-icon name="good-job-o" @click="handleCommentLike(comment)" />
-                <span>{{comment.likes.length}}</span>
+                <van-icon
+                  name="good-job-o"
+                  @click="handleCommentLike(comment)"
+                />
+                <span>{{ comment.likes.length }}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="comment-popup-input">
-        <van-field v-model="value" placeholder="说点什么" autofocus ref="comment" />
+        <van-field
+          v-model="value"
+          placeholder="说点什么"
+          autofocus
+          ref="comment"
+        />
         <van-button
           v-if="comment"
           type="info"
           square
           native-type="submit"
           @click="handleCommentSubmit"
-        >提交</van-button>
+          >提交</van-button
+        >
       </div>
     </van-popup>
     <van-popup v-model="reply" position="bottom" class="reply-popup">
       <div class="reply-popup-input">
         <van-field
           v-model="value"
-          :placeholder="`回复：${currentComment && currentComment.from && currentComment.from.username}`"
+          :placeholder="`回复：${
+            currentComment &&
+            currentComment.from &&
+            currentComment.from.username
+          }`"
           autofocus
           ref="reply"
         />
@@ -148,7 +204,8 @@
           square
           native-type="submit"
           @click="handleCommentReplySubmit"
-        >提交</van-button>
+          >提交</van-button
+        >
       </div>
     </van-popup>
     <van-action-sheet
@@ -162,10 +219,32 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
-import { Toast } from "vant";
+import {
+  Toast,
+  Skeleton,
+  Popup,
+  ActionSheet,
+  Field,
+  Button,
+  Icon,
+  Swipe,
+  SwipeItem,
+  Image,
+} from "vant";
 
 export default {
   name: "ScrollableBox",
+  components: {
+    "van-popup": Popup,
+    "van-action-sheet": ActionSheet,
+    "van-field": Field,
+    "van-button": Button,
+    "van-icon": Icon,
+    "van-swipe": Swipe,
+    "van-swipe-item": SwipeItem,
+    "van-skeleton": Skeleton,
+    "van-image": Image,
+  },
   data() {
     return {
       width: null,
@@ -177,17 +256,17 @@ export default {
       reply: false,
       defaultAvatar: require("../assets/icons/user.svg"),
       show: false,
-      actions: [{ name: "删除", color: "#ee0a24" }]
+      actions: [{ name: "删除", color: "#ee0a24" }],
     };
   },
   props: {
     list: {
       type: Array,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   computed: {
-    ...mapGetters(["userinfo"])
+    ...mapGetters(["userinfo"]),
   },
   mounted() {
     setTimeout(() => {
@@ -219,7 +298,7 @@ export default {
         item.disabled = true;
         this.$http
           .post("/post/like", {
-            postId: item._id
+            postId: item._id,
           })
           .then(({ data }) => {
             item.disabled = false;
@@ -240,13 +319,13 @@ export default {
       console.log(this.currentItem);
       this.$http
         .delete("/post/delete", {
-          data: { _id: this.currentItem._id }
+          data: { _id: this.currentItem._id },
         })
         .then(() => {
           this.$emit("reload");
           Toast({
             message: "删除成功",
-            icon: "https://img.yzcdn.cn/vant/logo.png"
+            icon: "https://img.yzcdn.cn/vant/logo.png",
           });
         });
     },
@@ -262,7 +341,7 @@ export default {
       this.$http
         .post("/post/comment", {
           postId: this.currentItem._id,
-          content: this.value
+          content: this.value,
         })
         .then(({ data }) => {
           this.currentItem.comments = data.comments;
@@ -274,7 +353,7 @@ export default {
     handleCommentLike(comment) {
       this.$http
         .post("/post/comment/like", {
-          commentId: comment._id
+          commentId: comment._id,
         })
         .then(({ data }) => {
           console.log(data);
@@ -294,7 +373,7 @@ export default {
         .post("/post/comment", {
           postId: this.currentComment.postId,
           content: this.value,
-          parent: this.currentComment._id
+          parent: this.currentComment._id,
         })
         .then(({ data }) => {
           console.log(data);
@@ -311,8 +390,8 @@ export default {
           this.reply = false;
           Toast("评论成功");
         });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>

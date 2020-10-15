@@ -2,7 +2,13 @@
   <van-form @submit="onSubmit">
     <van-uploader v-model="avatar" :after-read="afterRead" :max-count="1" />
 
-    <van-field v-model="userinfo.username" name="username" label="用户名" placeholder="用户名" readonly />
+    <van-field
+      v-model="userinfo.username"
+      name="username"
+      label="用户名"
+      placeholder="用户名"
+      readonly
+    />
     <van-field
       v-model="userinfo.nickname"
       type="nickname"
@@ -21,32 +27,42 @@
       placeholder="请输入描述"
       show-word-limit
     />
-    <div style="margin: 16px;">
+    <div style="margin: 16px">
       <van-button round block type="info" native-type="submit">提交</van-button>
       <br />
-      <van-button round block type="default" @click="handleLogout">注销</van-button>
+      <van-button round block type="default" @click="handleLogout"
+        >注销</van-button
+      >
     </div>
   </van-form>
 </template>
 <script>
 import { mapGetters } from "vuex";
+import { Form, Field, Button, Uploader } from "vant";
+
 export default {
+  components: {
+    "van-form": Form,
+    "van-field": Field,
+    "van-button": Button,
+    "van-uploader": Uploader,
+  },
   data() {
     return {
       avatar: [
         {
-          url: ""
-        }
-      ]
+          url: "",
+        },
+      ],
     };
   },
   computed: {
-    ...mapGetters(["userinfo"])
+    ...mapGetters(["userinfo"]),
   },
   watch: {
     userinfo(val) {
       this.avatar[0].url = val.avatar;
-    }
+    },
   },
   mounted() {
     this.avatar[0].url = this.userinfo.avatar;
@@ -59,7 +75,7 @@ export default {
         .then(() => {
           this.$toast("更新成功");
         })
-        .catch(err => {
+        .catch((err) => {
           this.$notify(err);
         });
     },
@@ -71,10 +87,10 @@ export default {
       this.$http
         .post("/user/avatar", formData, {
           headers: {
-            "Content-Type": "multipart/form-data"
-          }
+            "Content-Type": "multipart/form-data",
+          },
         })
-        .then(res => {
+        .then((res) => {
           this.avatar[0].status = "done";
           this.avatar[0].message = "";
           console.log(res);
@@ -86,8 +102,8 @@ export default {
     },
     handleLogout() {
       this.$store.dispatch("LOG_OUT");
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>

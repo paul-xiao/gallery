@@ -8,13 +8,18 @@ import clickOutside from './directives/click-outside'
 import components from './components'
 import $message from './components/message'
 import pxui from 'pxui'
-import Vant from 'vant'
-import 'vant/lib/index.css'
 import { Lazyload } from 'vant'
 import { Toast, Notify } from 'vant'
+import 'amfe-flexible'
+
+// import VueSocketIO from 'vue-socket.io'
+
+// Vue.use(new VueSocketIO({
+//   debug: true,
+//   connection: 'http://192.168.43.141:3000'
+// }))
 
 Vue.use(Lazyload)
-Vue.use(Vant)
 Vue.prototype.$http = $http
 Vue.prototype.$toast = Toast
 Vue.prototype.$notify = Notify
@@ -23,11 +28,12 @@ Vue.prototype.$message = $message
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
-  // let { username } = JSON.parse(localStorage.getItem('userinfo')) || {}
-  // let { auth } = to.meta
-  // if(!username && auth && !['signin', 'signup'].includes(to.name)) {
-  //   return next({path: `/signin${to.fullPath ? `?redirect=${to.fullPath}` : ''}`})
-  // }
+  let { username } = JSON.parse(sessionStorage.getItem('userinfo')) || {}
+  let { auth } = to.meta
+  if (!username && auth && !['signin', 'signup'].includes(to.name)) {
+    console.log(username);
+    return next({ path: `/signin` })
+  }
   next()
 })
 // register directive

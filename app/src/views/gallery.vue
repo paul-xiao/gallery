@@ -13,19 +13,19 @@ export default {
   name: "Gallery",
   components: {
     ScrollableBox,
-    GalleryList
+    GalleryList,
   },
   data() {
     return {
       lists: [],
-      galleryLists: []
+      galleryLists: [],
     };
   },
   props: {
-    msg: String
+    msg: String,
   },
   computed: {
-    ...mapGetters(["userinfo"])
+    ...mapGetters(["userinfo"]),
   },
   created() {
     this.init();
@@ -34,29 +34,34 @@ export default {
     init() {
       const { username } = this.userinfo;
       username &&
-        this.$http.get("/post/list").then(({ data }) => {
-          this.galleryLists = data.map(d => {
-            const topComments =
-              d.comments.length > 5 ? d.comments.slice(0, 5) : d.comments;
-            return {
-              ...d,
-              topComments
-            };
-          });
-          if (!data) return;
-          console.log(data);
-
-          this.lists = data
-            .filter((item, index) => index < 5) //前五条数据
-            .map(l => {
+        this.$http
+          .get("/post/list")
+          .then(({ data }) => {
+            this.galleryLists = data.map((d) => {
+              const topComments =
+                d.comments.length > 5 ? d.comments.slice(0, 5) : d.comments;
               return {
-                name: l.title,
-                url: l.files && l.files[0]
+                ...d,
+                topComments,
               };
             });
-        });
-    }
-  }
+            if (!data) return;
+            console.log(data);
+
+            this.lists = data
+              .filter((item, index) => index < 5) //前五条数据
+              .map((l) => {
+                return {
+                  name: l.title,
+                  url: l.files && l.files[0],
+                };
+              });
+          })
+          .catch(() => {
+            this.$router.push("/");
+          });
+    },
+  },
 };
 </script>
 <style lang="stylus"></style>

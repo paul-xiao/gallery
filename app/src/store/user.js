@@ -7,6 +7,9 @@ const user = {
   mutations: {
     INIT_USER_STATE(state, userinfo = {}) {
       state.userinfo = userinfo
+      sessionStorage.setItem('userinfo', JSON.stringify(state.userinfo))
+
+
     },
     UPDATE_USER_STATE(state, userinfo = {}) {
       Object.assign(state.userinfo, userinfo)
@@ -45,7 +48,6 @@ const user = {
   },
   getters: {
     userinfo: (state) => {
-      sessionStorage.setItem('userinfo', JSON.stringify(state.userinfo))
       return state.userinfo
     },
   },

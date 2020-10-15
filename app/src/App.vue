@@ -6,17 +6,21 @@
 
 <script>
 export default {
-  name: 'App',
-}
+  name: "App",
+  mounted() {},
+};
 </script>
 
 <style lang="stylus">
-@import '~@/styles/index.styl'
-html,body
+@import '~@/styles/index.styl';
+
+html, body {
   height: 100%;
   width: 100%;
   margin: 0;
-#app
+}
+
+#app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -24,4 +28,5 @@ html,body
   color: #2c3e50;
   height: 100%;
   width: 100%;
+}
 </style>

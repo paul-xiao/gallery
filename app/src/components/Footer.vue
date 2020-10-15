@@ -13,58 +13,65 @@
   </div>
 </template>
 <script>
+import { Icon } from "vant";
 export default {
-  name: 'Footer',
+  name: "Footer",
+  components: {
+    "van-icon": Icon,
+  },
   data() {
     return {
       nav: [
         {
-          title: '1',
-          icon: 'home-o',
-          link: 'gallery',
+          title: "1",
+          icon: "home-o",
+          link: "gallery",
         },
         {
-          title: '2',
-          icon: 'search',
-          link: 'search',
+          title: "2",
+          icon: "search",
+          link: "search",
         },
         {
-          title: '3',
-          icon: 'add-o',
-          link: 'post',
+          title: "3",
+          icon: "add-o",
+          link: "post",
         },
         {
-          title: '4',
-          icon: 'info-o',
-          link: 'info',
+          title: "4",
+          icon: "chat-o",
+          link: "im",
         },
         {
-          title: '5',
-          icon: 'user-o',
-          link: 'profile',
+          title: "5",
+          icon: "user-o",
+          link: "profile",
         },
       ],
-    }
+    };
   },
   props: {},
   methods: {
     handleClick(item) {
       if (this.$route.name !== item.link) {
-        this.$router.push(item.link)
+        this.$router.push(item.link);
       }
     },
   },
-}
+};
 </script>
 <style lang="stylus">
-.bottom-nav
-  height 100%
-  display flex
-  align-items center
-  justify-content center
-  &-item
-    flex:1
-    display flex
-    align-items center
-    justify-content center
+.bottom-nav {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
 </style>

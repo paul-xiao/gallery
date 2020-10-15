@@ -1,7 +1,11 @@
 <template>
   <div class="scrollable-box">
     <div class="scrollable-box-inner" :style="{ width: width }">
-      <div class="scrollable-box-item" v-for="(item, index) of list" :key="index">
+      <div
+        class="scrollable-box-item"
+        v-for="(item, index) of list"
+        :key="index"
+      >
         <van-skeleton :row="3" :loading="loading">
           <img :src="item.url" alt width="100%" height="100%" />
         </van-skeleton>
@@ -10,19 +14,24 @@
   </div>
 </template>
 <script>
+import { Skeleton } from "vant";
+
 export default {
   name: "ScrollableBox",
+  components: {
+    "van-skeleton": Skeleton,
+  },
   data() {
     return {
       width: null,
-      loading: true
+      loading: true,
     };
   },
   props: {
     list: {
       type: Array,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   mounted() {
     setTimeout(() => {
@@ -35,7 +44,7 @@ export default {
       const baseMargin = 5;
       this.width = (unit + baseMargin) * this.list.length + "px";
     }, 3000);
-  }
+  },
 };
 </script>
 <style lang="stylus" scoped>

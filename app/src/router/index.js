@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const include = function(path) {
+const include = function (path) {
   return () => import(`@/views/${path}`)
 }
 
@@ -54,6 +54,14 @@ const router = new Router({
           path: '/search',
           name: 'search',
           component: include('search'),
+          meta: {
+            auth: true,
+          },
+        },
+        {
+          path: '/im',
+          name: 'im',
+          component: include('im'),
           meta: {
             auth: true,
           },

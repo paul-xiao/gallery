@@ -16,7 +16,7 @@
         placeholder="密码"
         :rules="[{ required: true, message: '请填写密码' }]"
       />
-      <div style="margin: 16px;">
+      <div style="margin: 16px">
         <van-button round block type="info" native-type="submit">
           提交
         </van-button>
@@ -26,77 +26,68 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import { Notify } from 'vant'
+import { mapGetters } from "vuex";
+import { Notify, Form, Field, Button } from "vant";
 
 export default {
+  components: {
+    "van-form": Form,
+    "van-field": Field,
+    "van-button": Button,
+  },
   data() {
     return {
       formData: {
-        username: '',
-        password: '',
+        username: "",
+        password: "",
       },
-    }
+    };
   },
   computed: {
-    ...mapGetters(['userinfo']),
+    ...mapGetters(["userinfo"]),
   },
   created() {
-    const { username } = this.userinfo
-    username && this.$router.push('/')
+    const { username } = this.userinfo;
+    username && this.$router.push("/");
   },
   methods: {
     init() {
-      this.$store.dispatch('GET_USER_INFO').then(() => {
-        this.$router.push('/')
-      })
+      this.$store.dispatch("GET_USER_INFO").then(() => {
+        this.$router.push("/");
+      });
     },
     onSubmit() {
       this.$http
-        .post('/user/signin', this.formData)
+        .post("/user/signin", this.formData)
         .then(({ data }) => {
-          console.log(data)
+          console.log(data);
           if (data.status) {
-            this.init()
+            this.init();
           } else {
-            console.log(data.message)
+            console.log(data.message);
 
-            Notify(data.message)
+            Notify(data.message);
           }
         })
         .catch((err) => {
-          Notify(err.message)
-        })
+          Notify(err.message);
+        });
     },
   },
-}
+};
 </script>
 <style lang="stylus" scoped>
-.signin
- height: 100%;
- width: 100%;
- display: flex;
- justify-content: center;
- align-items: center;
-.form
-  input,button
-    display: block;
-    border: 0;
-    margin: 10px 0;
-    height: 35px;
-    width: 200px;
-    outline: none
-  input
-    width: calc( 200px - 20px);
-    padding: 0 10px;
-    box-shadow: 0 0 1px #607d8b;
-  button
-    background: lightblue;
-    color: #FFF;
-    &:active, &:hover
-     background: darken(lightblue, 20%);
-  a
-    margin: 10px 0;
-    text-decoration: none;
-    color: darken(lightblue, 10%);
+.signin {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  a {
+    margin-top: 15px;
+    font-size: 16px;
+    display: inline-block;
+  }
+}
 </style>

@@ -5,6 +5,7 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import axios from "axios";
 export default {
   name: "Home",
   created() {
@@ -13,26 +14,33 @@ export default {
     this.init();
   },
   computed: {
-    ...mapGetters(["userinfo"])
+    ...mapGetters(["userinfo"]),
   },
   watch: {
     userinfo(val) {
       !val.username && this.$router.push("/signin");
-    }
+    },
   },
   methods: {
     init() {
-      this.$store
-        .dispatch("GET_USER_INFO")
-        .then(data => {
-          console.log(data);
+      axios
+        .get(`http://localhost:3000/user/list`, {
+          withCredentials: true,
         })
-        .catch(err => console.log(err));
+        .then((res) => {
+          console.log(res);
+        });
+      // this.$store
+      //   .dispatch("GET_USER_INFO")
+      //   .then(data => {
+      //     console.log(data);
+      //   })
+      //   .catch(err => console.log(err));
     },
     logout() {
       this.$store.dispatch("LOG_OUT");
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="stylus" scoped>
