@@ -12,12 +12,12 @@ import { Lazyload } from 'vant'
 import { Toast, Notify } from 'vant'
 import 'amfe-flexible'
 
-// import VueSocketIO from 'vue-socket.io'
+import VueSocketIO from 'vue-socket.io'
 
-// Vue.use(new VueSocketIO({
-//   debug: true,
-//   connection: 'http://192.168.43.141:3000'
-// }))
+Vue.use(new VueSocketIO({
+  debug: true,
+  connection: 'http://192.168.43.141:3000'
+}))
 
 Vue.use(Lazyload)
 Vue.prototype.$http = $http

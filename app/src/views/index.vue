@@ -11,7 +11,7 @@ export default {
   created() {
     console.log("---update---");
 
-    this.init();
+    // this.init();
   },
   computed: {
     ...mapGetters(["userinfo"]),

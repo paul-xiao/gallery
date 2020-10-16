@@ -65,7 +65,7 @@ const router = new Router({
           meta: {
             auth: true,
           },
-        },
+        }
       ],
       meta: {
         auth: true,
@@ -87,6 +87,14 @@ const router = new Router({
         auth: false,
       },
     },
+    {
+      path: '/chat',
+      name: 'chat',
+      component: include('chat'),
+      meta: {
+        auth: true,
+      },
+    }
   ],
 })
 

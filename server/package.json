@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --inspect ./index.js"
+    "dev": "nodemon --inspect ./index.js",
+    "ws": "nodemon --inspect ./controller/ws.js"
   },
   "keywords": [
     "gallery",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "chalk": "^3.0.0",
     "figures": "^3.2.0",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "socket.io": "^2.3.0"
   }
 }

@@ -9,8 +9,10 @@ const bodyParser = require('body-parser')
 const passport = require('./config/passport')
 const upload = require('./utils/upload')
 const path = require('path')
-
 const app = express()
+// const io = require('socket.io')(app);
+// const ws = require('./controller/ws')(io)
+
 
 app.use(cookieParser())
 app.use(bodyParser.json({ limit: '50mb' })) // create application/json parser
