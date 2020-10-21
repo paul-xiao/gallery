@@ -27,7 +27,6 @@ module.exports = (source, id, parent_id) => {
     }
   }
   console.log('3')
-  console.log(tree)
 
   return Object.values(tree)
 }

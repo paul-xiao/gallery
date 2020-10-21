@@ -12,12 +12,14 @@ import { Lazyload } from 'vant'
 import { Toast, Notify } from 'vant'
 import 'amfe-flexible'
 
-import VueSocketIO from 'vue-socket.io'
+// import VueSocketIO from 'vue-socket.io'
 
-Vue.use(new VueSocketIO({
-  debug: true,
-  connection: 'http://192.168.43.141:3000'
-}))
+// Vue.use(
+//   new VueSocketIO({
+//     debug: true,
+//     connection: 'http://192.168.43.141:3001',
+//   })
+// )
 
 Vue.use(Lazyload)
 Vue.prototype.$http = $http
@@ -31,7 +33,7 @@ router.beforeEach((to, from, next) => {
   let { username } = JSON.parse(sessionStorage.getItem('userinfo')) || {}
   let { auth } = to.meta
   if (!username && auth && !['signin', 'signup'].includes(to.name)) {
-    console.log(username);
+    console.log(username)
     return next({ path: `/signin` })
   }
   next()

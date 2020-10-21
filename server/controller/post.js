@@ -114,7 +114,6 @@ exports.toggleLikes = async (req, res) => {
         },
         { new: true }
       )
-      console.log(updatedpost.likes)
       res.send({
         flag: true,
         likes: updatedpost.likes,

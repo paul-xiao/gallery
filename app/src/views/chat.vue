@@ -26,6 +26,8 @@
 <script>
 import timeDiff from "../utils/timeDiff";
 import { Field, Button, Icon } from "vant";
+import EasyimClient from "../utils/easyim_client";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
@@ -33,22 +35,12 @@ export default {
     "van-field": Field,
     "van-button": Button,
   },
-  sockets: {
-    connect: function () {
-      this.status = "Conected";
-    },
-    message: function (data) {
-      console.log(
-        `this method was fired by the socket server. eg: io.emit("message", ${data})`
-      );
-      this.msgs = data;
-    },
-  },
   data() {
     return {
       value: null,
       feedback: null,
       status: null,
+      easyim: null,
       title: "ChatRoom1",
       msgs: [],
     };
@@ -59,19 +51,28 @@ export default {
       return timeDiff(value);
     },
   },
+  computed: {
+    ...mapGetters(["userinfo"]),
+  },
   mounted() {
-    this.title = this.$route.params.name;
-    this.$socket && this.$socket.emit("reset");
-    if (typeof WebSocket === "undefined") {
-      alert("您的浏览器不支持socket");
-    }
+    this.easyim = new EasyimClient({
+      connection: "http://192.168.43.141:3001",
+    });
+    this.title = this.$route.params.username;
   },
   methods: {
     handleClick() {
       console.log("click");
-      this.$socket.emit("sendById", {
-        id: this.$route.params.id,
-        msg: this.feedback,
+      this.easyim.sendMessage({
+        text: "Hello, EasyIM", //消息内容
+        to: {
+          type: "private", //group
+          id: this.$route.params.id, //群id
+          data: {
+            avatar: this.userinfo.avatar,
+            nickname: this.userinfo.username,
+          },
+        },
       });
     },
     onSearch() {},

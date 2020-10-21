@@ -10,9 +10,12 @@ const passport = require('./config/passport')
 const upload = require('./utils/upload')
 const path = require('path')
 const app = express()
-// const io = require('socket.io')(app);
-// const ws = require('./controller/ws')(io)
+const http = require('http').Server(app)
 
+const io = require('socket.io')(http)
+const Easyim = require('./utils/esayim')
+const im = new Easyim(io)
+im.onConnect()
 
 app.use(cookieParser())
 app.use(bodyParser.json({ limit: '50mb' })) // create application/json parser
@@ -60,6 +63,8 @@ app.use(express.static(path.join(__dirname, 'uploads')))
 const userController = require('./controller/user')
 const postController = require('./controller/post')
 const commentController = require('./controller/comment')
+const imController = require('./controller/esayim')
+const EasyIm = require('./controller/esayim')
 
 // user
 app.post('/user/signup', userController.signUp)
@@ -84,8 +89,14 @@ app.delete('/post/delete', postController.rmFromPostList)
 //comments
 app.post('/comment/add', commentController.AddComment)
 
+//img
+app.post('/im/private_message', imController.SendPrivateMessage)
+app.post('/im/group_message', imController.SendGroupMessage)
+app.post('/im/history', imController.GetHistory)
+app.post('/im/online', imController.GetOnlineList)
+
 // server
-app.listen(config.SERVER.PORT, async (err) => {
+http.listen(config.SERVER.PORT, async (err) => {
   if (err) {
     logger.error(err)
   } else {

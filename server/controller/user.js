@@ -116,7 +116,6 @@ exports.updateUserInfo = async (req, res) => {
     const { nickname, desc } = req.body
 
     await User.update({ _id: req.user._id }, { nickname, desc })
-    console.log(req.body)
 
     res.send({
       message: 'userinfo updated',

@@ -175,5 +175,4 @@ function buildTree1(source, id, parent_id) {
   for (a of source) {
     result = buildTree(comments, '_id', 'parentId')
   }
-  console.log(result)
 })()

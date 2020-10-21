@@ -1,5 +1,6 @@
 <template>
   <div class="im">
+    <div class="header">当前在线：{{ chatList.length }} 人</div>
     <form action="/">
       <van-search
         v-model="value"
@@ -13,10 +14,10 @@
       <div
         class="chat-list-item"
         v-for="chat of chatList"
-        :key="chat.id"
+        :key="chat.userId"
         @click="openChat(chat)"
       >
-        <div class="avatar">
+        <div class="avatar" :class="{ offline: !chat.connected }">
           <img :src="chat.avatar" alt="" v-if="!chat.type" />
           <div class="group-avatar" v-else>
             <img
@@ -29,7 +30,7 @@
         </div>
         <div class="info space-between">
           <div class="left">
-            <div class="name">{{ chat.ip }}</div>
+            <div class="name">{{ chat.username }}</div>
             <div class="last">{{ chat.id }}</div>
           </div>
           <div class="right">
@@ -38,28 +39,23 @@
         </div>
       </div>
     </div>
+    <div class="submit">
+      <van-button type="primary" @click="handleDisconnect"
+        >disconnect</van-button
+      >
+      <van-button type="primary" @click="handleReconnect">reconnect</van-button>
+    </div>
   </div>
 </template>
 <script>
 import timeDiff from "../utils/timeDiff";
-import { Search } from "vant";
+import { Search, Button } from "vant";
+import EasyimClient from "../utils/easyim_client";
+import { mapGetters } from "vuex";
 export default {
   components: {
     "van-search": Search,
-  },
-  sockets: {
-    connect: function () {
-      console.log("socket connected");
-      this.status = "connected";
-    },
-    connected: function (data) {
-      console.log(
-        `this method was fired by the socket server. eg: io.emit("feedback", ${data})`
-      );
-      console.log(data);
-      this.chatList = data;
-      localStorage.setItem("chatList", JSON.stringify(data));
-    },
+    "van-button": Button,
   },
   data() {
     return {
@@ -67,56 +63,9 @@ export default {
       feedback: null,
       status: null,
       msgs: [],
-      users: ["paul", "john", "honey"],
-      chatList: [
-        // {
-        //   id: "qo4k1R5NcHIk9UhmAAAA",
-        //   avatar: require("../assets/avatar/1.jpg"),
-        //   name: "Paul",
-        //   lastMsg: "hola",
-        //   lastUpdated: "2020-10-01 20:00:00",
-        // },
-        // {
-        //   id: "WBidF99ZiAY9MvjXAAAB",
-        //   avatar: require("../assets/avatar/2.jpg"),
-        //   name: "dummy",
-        //   lastMsg: "hola",
-        //   lastUpdated: "2020-10-01 20:00:00",
-        // },
-        // {
-        //   avatar: require("../assets/avatar/3.jpg"),
-        //   name: "numb",
-        //   lastMsg: "hola",
-        //   lastUpdated: "2020-10-01 20:00:00",
-        // },
-        // {
-        //   avatar: require("../assets/avatar/4.jpg"),
-        //   name: "stuiped",
-        //   lastMsg: "hola",
-        //   lastUpdated: "2020-10-01 20:00:00",
-        // },
-        // {
-        //   type: "group",
-        //   avatar: require("../assets/avatar/4.jpg"),
-        //   name: "xx群",
-        //   lastMsg: "hola",
-        //   lastUpdated: "2020-10-01 20:00:00",
-        //   members: [
-        //     {
-        //       name: "Paul",
-        //       avatar: require("../assets/avatar/1.jpg"),
-        //     },
-        //     {
-        //       name: "dummy",
-        //       avatar: require("../assets/avatar/2.jpg"),
-        //     },
-        //     {
-        //       name: "stuiped",
-        //       avatar: require("../assets/avatar/3.jpg"),
-        //     },
-        //   ],
-        // },
-      ],
+      users: [],
+      chatList: [],
+      easyim: null,
     };
   },
   filters: {
@@ -125,18 +74,22 @@ export default {
       return timeDiff(value);
     },
   },
-  mounted() {
-    console.log("mounted");
-    this.chatList = JSON.parse(localStorage.getItem("chatList")) || [];
-    this.$socket && this.$socket.emit("reset");
-    if (typeof WebSocket === "undefined") {
-      alert("您的浏览器不支持socket");
-    }
+  computed: {
+    ...mapGetters(["userinfo"]),
   },
-  watch: {
-    $route() {
-      this.chatList = JSON.parse(localStorage.getItem("chatList")) || [];
-    },
+  mounted() {
+    const { username, avatar, userId } = this.userinfo;
+    this.easyim = new EasyimClient({
+      connection: "http://192.168.43.141:3001",
+      query: {
+        username,
+        avatar,
+        userId,
+      },
+    });
+    this.easyim.on("online", (users) => {
+      this.chatList = users.filter((u) => u.userId !== userId);
+    });
   },
   methods: {
     handleClick() {
@@ -147,14 +100,20 @@ export default {
     onCancel() {},
     openChat(chat) {
       console.log(chat.name);
-      const { id, name } = chat;
+      const { id, username } = chat;
       this.$router.push({
         name: "chat",
         params: {
-          name,
+          username,
           id,
         },
       });
+    },
+    handleDisconnect() {
+      this.easyim.disconnect();
+    },
+    handleReconnect() {
+      this.$router.go();
     },
   },
 };
@@ -186,6 +145,24 @@ export default {
         height: 50px;
         border: 1px solid #eee;
         border-radius: 4px;
+        position: relative;
+
+        &:after {
+          content: '';
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: #31fd92;
+          position: absolute;
+          right: 0px;
+          bottom: 1px;
+        }
+
+        &.offline {
+          &:after {
+            background: #ee0a24;
+          }
+        }
 
         &>img {
           width: 100%;
@@ -271,6 +248,10 @@ export default {
     }
 
     /deep/ .van-field__control {
+      font-size: 16px;
+    }
+
+    /deep/ .van-button__text {
       font-size: 16px;
     }
   }
