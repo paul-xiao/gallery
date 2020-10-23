@@ -101,6 +101,7 @@ export default {
         });
     },
     handleLogout() {
+      this.$easyim.disconnect();
       this.$store.dispatch("LOG_OUT");
     },
   },

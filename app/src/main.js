@@ -13,13 +13,7 @@ import { Toast, Notify } from 'vant'
 import 'amfe-flexible'
 
 // import VueSocketIO from 'vue-socket.io'
-
-// Vue.use(
-//   new VueSocketIO({
-//     debug: true,
-//     connection: 'http://192.168.43.141:3001',
-//   })
-// )
+import EasyimClient from './utils/easyim_client'
 
 Vue.use(Lazyload)
 Vue.prototype.$http = $http
@@ -27,6 +21,9 @@ Vue.prototype.$toast = Toast
 Vue.prototype.$notify = Notify
 // Vue.prototype.$saveToIpfs = $saveToIpfs
 Vue.prototype.$message = $message
+Vue.prototype.$easyim = new EasyimClient({
+  connection: 'http://172.20.10.3:3001',
+})
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {

@@ -4,13 +4,22 @@
       <div class="return">
         <van-icon name="arrow-left" color="#1989fa" />
       </div>
-      <div class="header-title">{{ title }}</div>
+      <div class="header-title">{{ title + ":" + socketId }}</div>
     </div>
-    <div class="connected">{{ status }} is Connected</div>
-    <div class="msg">
-      <ul>
-        <li v-for="msg of msgs" :key="msg">{{ msg }}</li>
-      </ul>
+    <div class="msgs">
+      <div
+        class="msg"
+        :class="{ reverse: item.type === 'send' }"
+        v-for="(item, index) of msgs"
+        :key="index"
+      >
+        <div class="avatar">
+          <img :src="item.from.avatar" alt="" />
+        </div>
+        <div class="content">
+          <span>{{ item.content }}</span>
+        </div>
+      </div>
     </div>
     <div class="submit">
       <van-field v-model="feedback" placeholder="Say it!">
@@ -26,7 +35,6 @@
 <script>
 import timeDiff from "../utils/timeDiff";
 import { Field, Button, Icon } from "vant";
-import EasyimClient from "../utils/easyim_client";
 import { mapGetters } from "vuex";
 
 export default {
@@ -40,9 +48,20 @@ export default {
       value: null,
       feedback: null,
       status: null,
-      easyim: null,
+      $easyim: null,
       title: "ChatRoom1",
-      msgs: [],
+      socketId: "ChatRoom1",
+      msgs: [
+        // {
+        //   from: {
+        //     avatar: require("../assets/avatar/1.jpg"),
+        //   },
+        //   content: "text msgs",
+        //   type: "receive", // receive
+        //   status: "readed",
+        //   timestramp: new Date(),
+        // },
+      ],
     };
   },
   filters: {
@@ -54,20 +73,56 @@ export default {
   computed: {
     ...mapGetters(["userinfo"]),
   },
+  watch: {
+    $route() {
+      console.log("route changed");
+      this.$easyim.leaveRoom({
+        roomId: this.title,
+      });
+    },
+  },
   mounted() {
-    this.easyim = new EasyimClient({
-      connection: "http://192.168.43.141:3001",
+    const { id, username, type } = this.$route.params;
+
+    this.title = username;
+    this.socketId = id;
+    this.$easyim.joinRoom({
+      roomId: this.title,
     });
-    this.title = this.$route.params.username;
+    if (type) {
+      this.$easyim.subscribeGroup(this.title, (val) => {
+        this.msgs.push(val);
+      });
+    } else {
+      this.$easyim.receivePivate((val) => {
+        this.msgs.push(val);
+      });
+    }
+  },
+  beforeRouteLeave(from, to, next) {
+    this.$easyim.leaveRoom({
+      roomId: this.title,
+    });
+    this.$nextTick(() => {
+      next();
+    });
   },
   methods: {
     handleClick() {
       console.log("click");
-      this.easyim.sendMessage({
-        text: "Hello, EasyIM", //消息内容
+      this.$store.commit("UPDATE_CON", {
+        id: "V15cQCbTf7JvcqraAAAB",
+        ip: "::ffff:172.20.10.2",
+        lastUpdated: "Fri Oct 23 2020 16:13:13 GMT+0800 (GMT+08:00)",
+        username: "paultest",
+        avatar: "/static/timg.jpg",
+        userId: "5f0d158e9e3f9e3d5c80d6d9",
+      });
+      this.$easyim.sendMessage({
+        text: this.feedback, //消息内容
         to: {
-          type: "private", //group
           id: this.$route.params.id, //群id
+          type: this.$route.params.type, //group
           data: {
             avatar: this.userinfo.avatar,
             nickname: this.userinfo.username,
@@ -82,6 +137,9 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .chat {
+  height: 100%;
+  background: #f2f2f2;
+
   /deep/ .van-search--show-action {
     padding-left: 0;
   }
@@ -98,101 +156,79 @@ export default {
     }
   }
 
-  .connected {
-    color: #777;
-    font-size: 16px;
-    padding: 15px;
-  }
+  .msgs {
+    height: calc(100% - 100px);
+    overflow: auto;
 
-  .chat-list {
-    &-item {
+    .msg {
       background: #f2f2f2;
-      height: 50px;
-      padding: 10px 0 10px 15px;
-      font-size: 16px;
       display: flex;
-      margin-top: 10px;
+      padding: 15px;
 
-      &:first-child {
-        margin-top: 0;
-      }
+      &.reverse {
+        flex-direction: row-reverse;
 
-      &.group {
-      }
+        .content {
+          margin-right: 15px;
+          flex: 1;
+          border-radius: 10px;
+          text-align: left;
 
-      .avatar {
-        width: 50px;
-        height: 50px;
-        border: 1px solid #eee;
-        border-radius: 4px;
+          &:before {
+            display: none;
+          }
 
-        &>img {
-          width: 100%;
-          height: 100%;
-          box-sizing: border-box;
-          padding: 2px;
-        }
-
-        .group-avatar {
-          display: flex;
-          width: 100%;
-          height: 100%;
-          flex-wrap: wrap;
-
-          img {
-            display: flex;
-            box-sizing: border-box;
-            padding: 2px;
-
-            &:only-child {
-              height: 100%;
-              align-items: center;
-            }
-
-            &:first-child:nth-last-child(2), &:first-child:nth-last-child(2) ~ img {
-              width: 50%;
-              height: 50%;
-            }
-
-            &:first-child:nth-last-child(3), &:first-child:nth-last-child(3) ~ img {
-              width: 50%;
-              height: 50%;
-            }
-
-            &:first-child:nth-last-child(3) {
-              margin: 0 25%;
-            }
-
-            &:first-child:nth-last-child(3) ~ img {
-              float: left;
-            }
-
-            &:first-child:nth-last-child(4), &:first-child:nth-last-child(4) ~ img {
-              width: 50%;
-              height: 50%;
-            }
-
-            &:first-child:nth-last-child(5), &:first-child:nth-last-child(5) ~ img, &:first-child:nth-last-child(6), &:first-child:nth-last-child(6) ~ img, &:first-child:nth-last-child(7), &:first-child:nth-last-child(7) ~ img, &:first-child:nth-last-child(8), &:first-child:nth-last-child(8) ~ img, &:first-child:nth-last-child(9), &:first-child:nth-last-child(9) ~ img {
-              width: 33.33%;
-              height: 33.33%;
-            }
+          &:after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 8px solid #fff;
+            position: absolute;
+            top: 50%;
+            right: -8px;
+            transform: translateY(-50%);
           }
         }
       }
 
-      .info {
-        flex: 1;
-        padding: 15px;
-        text-align: left;
-        align-items: center;
-      }
-    }
-  }
+      .avatar {
+        height: 50px;
+        width: 50px;
 
-  .msg {
-    li {
-      text-align: left;
-      line-height: 40px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .content {
+        background: #fff;
+        margin-left: 15px;
+        padding: 15px;
+        position: relative;
+        flex: 1;
+        border-radius: 10px;
+        text-align: left;
+
+        span {
+          line-height: 1.7;
+        }
+
+        &:before {
+          content: '';
+          width: 0;
+          height: 0;
+          border-top: 8px solid transparent;
+          border-bottom: 8px solid transparent;
+          border-right: 8px solid #fff;
+          position: absolute;
+          top: 50%;
+          left: -8px;
+          transform: translateY(-50%);
+        }
+      }
     }
   }
 
@@ -200,17 +236,19 @@ export default {
     width: 100%;
     position: absolute;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
     box-sizing: border-box;
 
     /deep/ .van-field__body {
-      background: #fafafa;
+      border: 1px solid #f2f2f2;
     }
 
     /deep/ .van-field__control {
       font-size: 16px;
-      background: #fafafa;
+    }
+
+    /deep/ .van-button__text {
+      font-size: 16px;
     }
   }
 }

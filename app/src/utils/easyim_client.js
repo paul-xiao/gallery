@@ -6,26 +6,22 @@ class EasyimClient {
       connection: 'http://192.168.43.141:3001',
     }
     this.socket = null
-    this.connect()
   }
   // 建立连接
-  connect() {
-    const { connection, query } = this.options
-    console.log(query)
-
+  connect(query) {
+    const { connection } = this.options
     this.socket = io(connection, { query: query })
-    console.log(this.socket)
     this.socket.on('connect', () => {
-      console.log('connected')
+      console.log(this.socket.id, 'connected')
     })
   }
   // 断开连接
   disconnect() {
     if (this.socket.connected) {
+      console.log(this.socket.id, 'disconnected')
       this.socket.close()
-      console.log('disconnected', this.socket.connected)
     } else {
-      console.warn('already disconnected', this.socket.connected)
+      console.warn(this.socket.conneidcted, 'already disconnected')
     }
   }
   // 监听连接成功事件
@@ -34,29 +30,21 @@ class EasyimClient {
       cb(res)
     })
   }
-  createTextMessage(obj) {
-    return (
-      obj || {
-        text: 'Hello, GoEasyimClient', //消息内容
-        to: {
-          type: EasyimClient.SCENE.GROUP, //私聊还是群聊，私聊为GoEasyimClient.SCENE.PRIVATE
-          id: 'group001', //群id
-          data: '{"avatar":"/www/xxx.png","nickname":"区块链交流群"}', //群信息, 任意格式的字符串或者对象，用于更新会话列表中的群信息conversation.data
-        },
-      }
-    )
+  joinRoom(data) {
+    this.socket.emit('joinRoom', data)
+  }
+  leaveRoom(data) {
+    this.socket.emit('leaveRoom', data)
   }
   sendMessage(obj) {
-    const { to } = obj
-    if (to.type === 'private') {
-      this.socket.emit('private_message', obj)
-    } else {
-      this.socket.emit('group_message', obj)
-    }
+    this.socket.emit('message', obj)
   }
   //订阅群消息
-  subscribeGroup(groupId) {
-    console.log(groupId)
+  subscribeGroup(groupId, cb) {
+    this.socket.on(`${groupId}_message`, (val) => cb(val))
+  }
+  receivePivate(cb) {
+    this.socket.on('message', (val) => cb(val))
   }
   unsubscribeGroup(groupId) {
     console.log(groupId)
@@ -74,24 +62,6 @@ class EasyimClient {
 
     console.log(data)
   }
-  markPrivateMessageAsRead() {}
-  markGroupMessageAsRead() {}
-  removePrivateConversation() {}
-  //会话列表
-  latestConversations() {}
-  // 消息置顶
-  topPrivateConversation() {}
-  //历史消息
-
-  history() {}
-  //在线用户列表
-  hereNow() {}
-  //根据groupId获取当前在线群用户列表
-  groupHereNow() {}
-  //根据groupId获取群聊在线用户总数
-  groupOnlineCount() {}
-  //监听用户上下线提醒
-  subscribeUserPresence() {}
 }
 EasyimClient.EVENT = {}
 EasyimClient.SCENE = {}

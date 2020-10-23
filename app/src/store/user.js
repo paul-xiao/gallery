@@ -3,19 +3,27 @@ const userinfo = JSON.parse(sessionStorage.getItem('userinfo')) || {}
 const user = {
   state: {
     userinfo: userinfo,
+    contacts: [],
+    conversations: [],
   },
   mutations: {
     INIT_USER_STATE(state, userinfo = {}) {
       state.userinfo = userinfo
       sessionStorage.setItem('userinfo', JSON.stringify(state.userinfo))
-
-
     },
     UPDATE_USER_STATE(state, userinfo = {}) {
       Object.assign(state.userinfo, userinfo)
     },
+    UPDATE_CONTACTS(state, contacts) {
+      state.contacts = contacts
+    },
+    UPDATE_CON(state, conversations) {
+      state.conversations.push(conversations)
+      console.log(state.conversations)
+    },
     RESET_USER_STATE(state) {
       state.userinfo = {}
+      sessionStorage.removeItem('userinfo')
     },
   },
   actions: {
@@ -42,14 +50,15 @@ const user = {
       })
     },
     LOG_OUT({ commit }) {
-      $http.delete('/user/logout')
       commit('RESET_USER_STATE')
+
+      $http.delete('/user/logout')
     },
   },
   getters: {
-    userinfo: (state) => {
-      return state.userinfo
-    },
+    userinfo: (state) => state.userinfo,
+    contacts: (state) => state.contacts,
+    conversations: (state) => state.conversations,
   },
 }
 

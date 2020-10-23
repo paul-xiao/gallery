@@ -10,8 +10,16 @@ export default {
   name: "Home",
   created() {
     console.log("---update---");
-
-    // this.init();
+    const { userId } = this.userinfo;
+    this.$easyim.connect(this.userinfo);
+    this.$easyim.on("online", (users) => {
+      let userList = users.filter((u) => u.userId !== userId);
+      console.log(userList);
+      this.$store.commit("UPDATE_CONTACTS", userList);
+    });
+    this.$easyim.on("conversations", (conversations) => {
+      this.$store.commit("UPDATE_CON", conversations);
+    });
   },
   computed: {
     ...mapGetters(["userinfo"]),
@@ -30,12 +38,6 @@ export default {
         .then((res) => {
           console.log(res);
         });
-      // this.$store
-      //   .dispatch("GET_USER_INFO")
-      //   .then(data => {
-      //     console.log(data);
-      //   })
-      //   .catch(err => console.log(err));
     },
     logout() {
       this.$store.dispatch("LOG_OUT");

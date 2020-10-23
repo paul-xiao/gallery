@@ -29,18 +29,18 @@ export default {
         },
         {
           title: "2",
-          icon: "search",
-          link: "search",
-        },
-        {
-          title: "3",
           icon: "add-o",
           link: "post",
         },
         {
-          title: "4",
+          title: "3",
           icon: "chat-o",
           link: "im",
+        },
+        {
+          title: "4",
+          icon: "apps-o",
+          link: "contact",
         },
         {
           title: "5",

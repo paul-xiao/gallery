@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const include = function (path) {
+const include = function(path) {
   return () => import(`@/views/${path}`)
 }
 
@@ -65,7 +65,15 @@ const router = new Router({
           meta: {
             auth: true,
           },
-        }
+        },
+        {
+          path: '/contact',
+          name: 'contact',
+          component: include('contact'),
+          meta: {
+            auth: true,
+          },
+        },
       ],
       meta: {
         auth: true,
@@ -94,7 +102,7 @@ const router = new Router({
       meta: {
         auth: true,
       },
-    }
+    },
   ],
 })
 

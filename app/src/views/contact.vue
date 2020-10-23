@@ -1,7 +1,9 @@
 <template>
   <div class="im">
     <div class="header">
-      <span>会话列表</span>
+      <span
+        >通讯录 <small>当前在线：{{ contacts.length }} 人</small></span
+      >
       <van-icon name="add-o" class="addGroup"></van-icon>
     </div>
     <form action="/">
@@ -16,11 +18,11 @@
     <div class="chat-list">
       <div
         class="chat-list-item"
-        v-for="chat of conversations"
+        v-for="chat of contacts"
         :key="chat.id"
         @click="openChat(chat)"
       >
-        <div class="avatar">
+        <div class="avatar" :class="{ offline: !chat.connected }">
           <span class="unread" v-if="chat.unread && chat.unread.length">{{
             chat.unread.length
           }}</span>
@@ -37,12 +39,7 @@
         <div class="info space-between">
           <div class="left">
             <div class="name">{{ chat.username }}</div>
-            <div class="last" v-if="chat.messages">
-              {{ chat.messages[chat.messages.length - 1].content }}
-            </div>
-          </div>
-          <div class="right">
-            <span>{{ chat.lastUpdated | shortDate }}</span>
+            <div class="last">{{ chat.ip }}</div>
           </div>
         </div>
       </div>
@@ -60,7 +57,7 @@ export default {
   },
   data() {
     return {
-      value: null,
+      value: "",
       $easyim: null,
     };
   },
@@ -71,13 +68,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["userinfo", "conversations"]),
+    ...mapGetters(["userinfo", "contacts"]),
   },
   methods: {
     onSearch() {},
     onCancel() {},
     openChat(chat) {
-      console.log(chat.name);
       const { id, username, type } = chat;
       this.$router.push({
         name: "chat",
@@ -141,6 +137,23 @@ export default {
           position: absolute;
           left: 0px;
           top: 1px;
+        }
+
+        &:after {
+          content: '';
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: #31fd92;
+          position: absolute;
+          right: 0px;
+          bottom: 1px;
+        }
+
+        &.offline {
+          &:after {
+            background: #ee0a24;
+          }
         }
 
         &>img {
